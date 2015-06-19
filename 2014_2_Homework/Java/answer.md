@@ -1,5 +1,7 @@
 ##java期末习题answer
 
+`一些Java的习题,有不对的地方欢迎指正`
+
 ###选择部分
 **1、下列叙述中正确的是()**
 
@@ -450,6 +452,7 @@ public class X extends Frame
 			java.awt.Container
 				java.awt.Panel
 					java.applet.Applet
+
 **43、在Applet生命周期中，下列()方法是在装载Applet时被调用**
 
  - ①stop() ②init() ③start() ④destroy()
@@ -462,17 +465,34 @@ public class X extends Frame
 
  - ①code ②codebase ③width ④height
 
+
+	
+	B
+	code:规定Java applet文件名
+	width:宽度
+	height:高度
+	codebase:规定code属性中指定的applet的基准 URL
+	
 **45、下列命令中，()命令是Java的编译命令**
 
  - ①javac ②java ③javadoc ④appletviewer
 
+
+	B
+	java编译,javac执行
+	
 **46、下列语句的输出结果是()**
 
 ```java
 public class A{public static void main(String[]args){System.out.println(2>1);}}
 ```
+
  - ①true ②false ③1  ④0
 
+
+	A
+	2>1是条件语句,返回true或者false
+	
 **47、下列各输出语句中，显示结果为“123”的是()**
 
  - ①System.out.println(1+2+3);
@@ -480,10 +500,18 @@ public class A{public static void main(String[]args){System.out.println(2>1);}}
  - ③System.out.println(1+2+3+"");
  - ④System.out.println(1+2+""+3);
 
+
+	B
+	隐式类型转换,1是int,加上""成为String的"1",+号拼接字符串
+	
 **48、若在某一个类定义中定义有方法：abstract void f();则该类是()**
 
  - ①public类 ②final类 ③抽象类 ④不能确定
 
+
+	C
+	抽象方法必须放到抽象类中
+	
 **49、main方法是Java Application程序执行的入口点，下列main方法原型是不正确的是()**
 
  - ①public static void main(String[]args)
@@ -491,26 +519,47 @@ public class A{public static void main(String[]args){System.out.println(2>1);}}
  - ③public static void main(String[]a)
  - ④public static void main(string[]args)
 
+
+	D
+	字符串类型是String
+	
 **50、在Java中，用()关键字定义常量**
 
  - ①#define ②fixed ③const ④final
 
+
+	D
+	const没有意义,仅为java保留关键字
+	
 **51、在Java语言中，()包是自动导入的**
 
  - ①java.lang ②java.awt  ③java.applet  ④java.io
 
+
+	A
+	
 **52、如果一个Java源程序文件中定义有4个类，则使用Sun公司的SDK编译器javac.exe编译该源程序文件，将产生()个文件名与类名相同而扩展名为.class的字节码文件**
 
  - ①1  ②2  ③3  ④4
 
+
+	D
+	一个类一个class
+	
 **53、下列()不是Java的保留字**
 
  - ①do ②double ③sizeof ④while
 
+
+	C
+	
 **54、在Java中，()语句作为异常处理的统一出口**
 
  - ①throw ②try ③finally ④catch
 
+
+	C
+	
 **55、下列语句输出结果为()**
 ```java
 public class A{public static void main(String[]args){byte b=0xa;System.out.println(b);}}
@@ -518,11 +567,19 @@ public class A{public static void main(String[]args){byte b=0xa;System.out.print
 
  - ①0xa ②a ③1 ④10
 
+
+	D
+	输出为10进制的0xa
+	
 **56、下列常见的系统定义的异常中，()是输入、输出异常**
 
  - ①ClassNotFoundException ②IOException
  - ③FileNotFoundException ④UnknownHostException
 
+
+	B
+	依次是:无法找到指定类;输出输出异常;文件无法找到;无法打开网站
+	
 **57、下列叙述错误的是()**
 
  - ①Java是一种面向对象的网络编程语言
@@ -530,13 +587,24 @@ public class A{public static void main(String[]args){byte b=0xa;System.out.print
  - ③Java提供了类库支持TCP/IP协议
  - ④Java语言允许使用指针访问内存
 
+
+	D
+	Java语言一种面向对象的,适用于网络环境的程序设计语言;
+	Java Applet程序在网络上传输不受硬软件平台的限制
+	Java提供了类库支持TCP/IP协议
+	Java不允许指针访问内存
 **58、下列代码的执行结果是()**
 
 ```java
 public class A{ public static void main(String[]args){int a=4,b=6,c=8;String s="abc";System.out.println(a+b+s+c);}}
 ```
+
  - ①"ababcc" ②"464688" ③"46abc8" ④"10abc8"
 
+
+	D
+	int和String隐式转换
+	
 **59、下列叙述中不正确的是()**
 
  - ①abstract不能与final并列修饰同一个类
@@ -544,15 +612,30 @@ public class A{ public static void main(String[]args){int a=4,b=6,c=8;String s="
  - ③abstract方法必须在abstract类中
  - ④static方法中能直接处理非static的属性
 
+
+	BD
+	final类不能继承,和abstract矛盾
+	可以有private成员,但因为无法被继承所以没什么用
+	abstract方法必须在abstract类中,反之不成立
+	静态方法不能直接处理非静态方法和属性
+	
 **60、在Applet的关键方法中，下列()方法是关闭浏览器以释放Applet占用的所有资源**
 
  - ①init() ②start()  ③stop() ④destroy()
 
+
+	D
+	init()方法用于完成主类实例的初始化,start()方法用于启动浏览器运行Applet的主线程,paint()方法用于在Applet的界面中显示文字/图形和其他界面元素,destroy()方法用于关闭浏览器并释放资源
+	
 **61、下列Java常见事件类中()是鼠标事件类**
 
 
  - ①InputEvent ②KeyEvent ③MouseEvent ④WindowEvent
 
+
+	C
+	依次是:输入事件,键盘事件,鼠标事件,窗口事件
+	
 **62、下列类定义中不正确的是()**
 
  - ①public class A extends B{}
@@ -560,20 +643,36 @@ public class A{ public static void main(String[]args){int a=4,b=6,c=8;String s="
  - ③public class A implements B,D{}
  - ④public class A extends B implements C,D,E{}
 
+
+	B
+	类不允许多继承,接口可以,CD都是接口多继承
+	
 **63、如果子类中覆盖了父类中的同名方法，则在子类中调用父类中的同名方法时应使用关键字()**
 
  - ①this ②super ③implements ④extends
 
+
+	B
+	super调用父类,this调用子类
+	implements接口继承,extends类继承
+	
 **64、在Java中，子类重新定义一个与从父类那里继承来的域变量（成员变量）完全相同的变量，这称为域的()**
 
  - ①隐藏 ②覆盖 ③重载 ④Java不支持此特性
 
+
+	A
+	
 **65、为了区分同一个类中重载的各个同名方法，要求()**
 
  - ①采用不同的形式参数列表（形式参数的个数、类型、顺序不完全相同）
  - ②返回值的数据类型不同
  - ③调用时用类名或对象名做前缀 ④形式参数名不同
 
+
+	A
+	重载必须满足:同名但参数表内参数个数/类型的顺序不同
+	
 **66、Give the following java source fragement:**
 
 ```java
@@ -587,13 +686,29 @@ public class Interesting{//do something
  - ①import java.awt.*; ②package mypackage
  - ③static int PI=3.14  ④public class MyClass{//do other thing…}
 
+
+	AB
+	这是Interesting.java的头部
+	
 **67、A class design requires that a member variable should be accessible only by same package, which modifer word should be used? ()**
 
  - ①protected ②public ③no modifer ④private
 
+
+	C
+	public:所有class可见
+	protected:同包和子类可见
+	no modifer:同包可见
+	private:仅自己可见
+	
 **68、Which modifer should be applied to a declaration of a class member variable for the value of variable to remain constant after the creation of the object? ()**
 
  - ①static ②final ③const ④abstract
+
+	
+	B
+	静态用final
+	
 **69、What happens when you try to compile and run the following program? ()**
 
 ```java
@@ -611,6 +726,10 @@ class Mystery{String s;
  - ④this code runs and writes "null" in the standard output
 
 
+	D
+	s在构造方法中为局部变量
+	
+	
 **70、Give the following java class:**
 
 ```java
@@ -626,45 +745,85 @@ public class Example
  - ②When run, some error will occur.
  - ③Output is zero. ④Output is null.
 
+	C
+	初始化为0
 
 **71、在Java的基本数据类型中，int型数据占用()字节内存空间**
 
  - ①1   ②2   ③4    ④不能确定，取决于计算机字长
 
+	
+	C
+
 **72、在线程中，普通优先级的线程其优先级默认值为()**
 
  - ①1   ②2   ③5     ④10
 
+
+	C
+	
 **73、下列()布局管理器能够帮助用户处理两个或者两个以上的成员共享同一个显示空间，它把容器分成许多层，每层显示空间占据这个容器的大小**
 
  - ①CardLayout ②BorderLayout ③FlowLayout ④GridLayout
 
+
+	A
+	
 **74、在j2sdk1.4.2版中，解压得到的目录中，()是存放编译器、解释器和其他许多工具的目录**
 
  - ①jre ②lib ③demo ④bin
 
+
+	D
+	
 **75、Java Application源程序文件的扩展名为()**
 
  - ①.java ②.class ③.html ④.exe
+
+
+	A
+	class是编译后的,html是网页,exe是pe可执行文件
 
 **76、关键字super的作用是()**
 
  - ①用来访问父类被隐藏的成员变量 ②用来调用父类中被重载的方法
  - ③用来调用父类的构造方法 ④以上都是
 
+
+	D
+	super是调用父类的成员
+	
 **77、对于构造方法，下列叙述正确的是()**
 
  - ①构造方法的方法名必须与类名相同 ②构造方法必须用void申明返回类型
  - ③构造方法可以被程序调用 ④若编程人员没在类中定义构造方法，程序将报错
 
+	
+	A
+	构造方法不声明返回类型
+	构造方法在new过程调用,之后不能直接调用
+	存在默认构造方法
+	
 **78、Java语言是在()语言基础上衍生的**
 
  - ①pascal ②C ③C++  ④VF
 
+
+	C
+	Java被称为C++--
+	
 **79、下列常见的系统定义的异常中，()是数组下标越界异常**
 
  - ①ArithmeticException ②IOException
  - ③ArrayIndexOutOfBoundsException ④NullPointerException
+
+
+	C
+	ArithmeticException:运算异常
+	IOException:输出输出异常
+	ArrayIndexOutOfBoundsException:下标越界异常
+	NullPointerException:空指针异常
+	
 **80、设有下面两个类的定义：**
 
 ```java
@@ -676,6 +835,10 @@ class Student extends Person{int score;int getScore(){return score;}}
 
  - ①包含关系 ②继承关系 ③关联关系 ④无关系
 
+
+	B
+	Student extends Person
+	
 **81、设有下面的两个类定义：**
 
 ```java
@@ -687,8 +850,12 @@ class B extends A{void show(){System.out.print("BB");}}
 
 	A a=new A();B b=new B();
 	a.show();b.show();
+	
  - ①AAAA  ②AABB ③BBBB ④BBAA
 
+	B
+	继承
+	
 **82、设有数组定义：**
 ``` java
 int a[]={1,2,3,4};int s=0;for(int i=0;i < a.length;i++)s+=a[i];
@@ -700,69 +867,133 @@ System.out.println(s);
  - ①0 ②1 ③10 ④1234
 
 
+	C
+	求和
+	
+
 **83、Thread类的方法中，toString()方法的作用是()**
+
  - ①只返回线程的名称 ②返回当前线程所属的线程组的名称
  - ③返回当前线程对象 ④返回线程的字符串信息
+
+
+	D
+	toString()
+	Returns a string representation of this thread, including the thread's name, priority, and thread group.
+	
 **84、下列()是创建一个标识有“OK”的按钮的语句**
 
  - ①TextField b=new TextField("OK");②Button b=new Button("OK");
  - ③TextArea b=new TextArea("OK");④Checkbox b=new Checkbox("OK");
 
+
+	B
+	
+	
 **85、有类定义：abstract class A{public abstract void f();}
 下面关于该类的描述中正确的是()**
 
  - ①该类可以用new A();实例化一个对象 ②该类不能被继承
  - ③该类的方法不能被重载 ④以上说法都不对
 
+
+	D
+	抽象类不能实例化,需继承,能重载
+	
 **86、下列()关键字通常用来给对象进行加锁，该标记使得对对象的访问是排他的**
 
  - ①transient ②serialize ③synchronized ④static
 
+
+	C
+	transient:域上关闭serialization机制,使字段避免被序列化
+	serialize:作甚序列化(化为二进制)
+	synchronized:互斥区块,同步锁
+	static:不依赖类,全局化
+	
 **87、以下()可能包含菜单条**
 
  - ①Panel ②Applet ③Dialog ④Frame
 
+
+	D
+	
 **88、有数组定义：int a[]={0,1,2,3,4,5,6};，则a数组的数组元素个数为()**
 
  - ①a.length() ②a.length()+1 ③a.length ④a.length+1
 
+
+	C
+	a.length是a的长度
+	
 **89、在使用interface声明一个接口时，只可以使用()修饰符修饰该接口**
 
  - ①public ②protected ③private和protected ④private
 
+
+	A
+	接口默认规范
+	
 **90、创建字符串s：String s=new String("abcd");以下()将改变s**
 
  - ①s.append("x"); ②s.concat("y"); ③s.substring(3); ④以上语句都不会
 
+
+	D
+	String是强制不变类型,它被赋值后在内存中相应位置的值就不会再改变,即使使用String的以上任何方法,所返回的值都是一个重新创建的String类型,而不会在原值上改变
+	
 **91、下列()是不合法的标识符**
 
  - ①_book ②3file ③$good ④a_$2
 
+
+	B
+	
 **92、容器Panel和Applet默认使用的布局管理器是()**
 
  - ①CardLayout ②BorderLayout ③FlowLayout ④GridLayout
 
+
+	B
+	CardLayout把容器分成许多层,每层只能放置一个构件。FlowLayout是Pane和 Applet默认的布局管理器,构件在容器中从上到下/从左到右进行放置,所以选项B正确。 BorderLayout是Window/Frame和Dialog的默认布局管理器,在BorderLayout布局管理器中构件分成5个区域,每个区域只能放置一个构件。GridLayout使容器中各个构件呈网状布局/平均占据容器的空间
+	
 **93、以下()不属于Java Application应用程序编写和执行步骤**
 
  - ①编写源代码 ②编写HTML文件 ③编译源代码 ④解释执行
 
+
+	B
+	
 **94、有如下代码：class A{private int m;public static void f(){}}
 为了让f()方法能直接访问m，则应()**
 
  - ①将private int m;改为protected int m;②将private int m;改为public int m;
  - ③将private int m;改为static int m;④将private int m;改为int m;
 
+
+	C
+	静态方法不能直接调用非静态成员
+	
 **95、设有数组定义：int a[]=new int[8];，则a.length的值为()**
 
  - ①0 ②7 ③8 ④9
 
+
+	C
+	
 **96、下列保留字中书写正确的是()**
 
  - ①Case ②For ③try ④viod
 
+
+	C
+	
 **97、下列()是Java的调试器，如果编译器返回程序代码的错误，可以用它对程序进行调试**
 
  - ①java.exe ②javadoc.exe ③jdb.exe ④javaprof.exe
+
+
+	C
 
 **98、下列代码的执行结果是()**
 ```java
@@ -771,6 +1002,10 @@ public class A{public static void main(String[]args){System.out.println(5/2);}}
 
  - ①2.5 ②2.0 ③3 ④2
 
+
+	D
+	整数除法
+	
 **99、下列Java源文件代码片段中，()是不正确的**
 
  - ①package t;public class A{}
@@ -778,10 +1013,20 @@ public class A{public static void main(String[]args){System.out.println(5/2);}}
  - ③import java.io.*;class A{}public class B{}
  - ④import java.io.*;import java.awt.*;public class A{}
 
+
+	B
+	包定义必须放在第一行
+	
 **100、下列()修饰符可以使在一个类中定义的成员变量只能被同一包中的类访问**
 
  - ①private ②public ③protected ④无修饰符
 
+
+	D
+	无修饰符号是缺省类型default,可以在同一个类,同一个包内访问
+	private:同一个类可以访问
+	public:是全局都可以访问
+	
 **101**
 ```java
 class A
@@ -794,7 +1039,11 @@ public class Test
 }
 ```
 **what is the result?()**
+
  - ①7  ②null  ③the program throw an exception ④43
+
+
+	D
 
 **102**
 ```java
@@ -806,7 +1055,6 @@ class B extends A
    {B b=new B();System.out.println(b.getNumber(0));}
  }
  ```
-
 **what is the result? ()**
 
  - ①compilation succeeds and 1 is printed
@@ -814,6 +1062,9 @@ class B extends A
  - ③compilation succeeds and 3 is printed
  - ④An error at this program cause compilation to fail
 
+
+	A
+	
 **103、Give incompleted method:**
 ```java
 //one
@@ -821,36 +1072,89 @@ class B extends A
 else if(safe()){//do the other…}
 }
 ```
-
 **The method unsafe() will throw an IOException, which completes the method of declaration when added at line one?()**
 
- -  - ①public IOException methodName()
+ - ①public IOException methodName()
  - ②public void methodName()
  - ③public void methodName() throw IOException
  - ④public void methodName() throws IOException
 
+
+	D
+	自定义异常类
+	
 **104、Which modifier should be applied to a method for the lock of object "this" to be obtained prior to excution any of the method body?()
 
  - ①synchronized ②abstract ③final ④static
 **105、Which statement is correctly declare a variable a which is suitable for refering to an array of 50 string empty object? ()
- - ①String [] a; ②char a[][]; ③String a[50]; ④String [50]a;
 
+ -  - ①String [] a; ②char a[][]; ③String a[50]; ④String [50]a;
+
+
+	A
+	声明一个一维数组
+	
 ###判断部分
 **106、Java的各种数据类型占用固定长度，与具体的软硬件平台环境无关**
+
+	对,只与Java虚拟机有关
+	
 **107、用“+”可以实现字符串的拼接，用“-”可以从一个字符串中去除一个字符子串**
+
+	错,-不成立
+	
 **108、A class can implement as many interfaces as needed**
+
+	对,接口多继承成立
+	
 **109、A subclass inherits all methods ( including the constructor ) from the superclass**
+	
+	错,private不能继承
+	
 **110、Java程序里，创建新的类对象用关键字new，回收无用的类对象使用关键字free**
+
+	错。new对free错,Java没有free关键字
+	
 **111、子类要调用父类的方法，必须使用super关键字**
+	
+	错,不一定,一般只有构造方法才用super,普通方法直接调用即可
+	
 **112、有的类定义时可以不定义构造函数，所以构造函数不是必需的**
+
+	错,编译器会添加默认构造函数
+	
 **113、如果p是父类Parent的对象，而c是子类Child的对象，则语句c = p是正确的**
+
+	错,不可以向下转型
+	
 **114、在Java语言中，系统常量null,false,true既可以大写，也可以小写**
+
+	错,NULL不是Java关键字,null是
+	
 **115、Java语言没有无符号整数类型、指针类型、结构类型、枚举类型、共用体类型**
+	
+	对
+	
 **116、J2SDK中主要有两个相关环境变量，即path和classpath。前者指定了JDK命令搜索路径，后者指定了Java类路径**
+
+	对
+	
 **117、final类中的属性和方法都必须被final修饰符修饰**
+
+	错,final类只是不能继承,被final修饰的类,其属性方法和普通类一样
+	
 **118、字符串分为两大类，一类是字符串常量，使用StringBuffer类的对象表示；另一类是字符串变量，使用String类的对象表示**
+
+	错,String常量,StringBuffer变量
+	
 **119、Java的屏幕坐标是以像素为单位，容器的左下角被确定为坐标的起点**
+
+	错,左上角为起点
+	
 **120、抽象方法必须在抽象类中，所以抽象类中的方法都必须是抽象方法**
+
+	错,抽象方法必须放在抽象类中,但抽象类可以有非抽象方法
+	
 
 ###程序阅读部分（结果和功能）
 **121**
@@ -894,8 +1198,10 @@ public class A implements ActionListener
  public static void main(String[]args)
   {new A();}
 }
-```language
 ```
+
+	加载4张图片,作为窗口的4个按钮,点击图片后把窗口背景色分别变为红,绿,蓝,粉,鼠标悬停在图片会出现颜色说明
+	
 **122**
 ```java
 import java.applet.Applet;
@@ -930,6 +1236,8 @@ g.drawString("设定颜色",40,80);
 </html>
 ```
 
+	网页应用,绿色矩形嵌套黑色椭圆,显示蓝色文字:设定颜色
+	
 **123**
 ```java
 import java.awt.*;
@@ -950,7 +1258,7 @@ public class A extends Applet implements ActionListener
    setFont(new Font("黑体",Font.BOLD,20));
    add(t,"North");add(p,"Center");
    p.setLayout(new GridLayout(4,4,5,5));
-   for(int i=0;i<b.length;i++)
+   for(int i=0;i < b.length;i++)
       {b[i]=new Button(""+i);
        p.add(b[i]);
        b[i].addActionListener(this);
@@ -986,6 +1294,8 @@ public class A extends Applet implements ActionListener
 }
 ```
 
+	计算机实现输入数据对2的乘除根号平方运算
+	
 **124**
 ```java
 import java.awt.*;
@@ -1017,6 +1327,10 @@ public void actionPerformed(ActionEvent e)
 public void windowClosing(WindowEvent e)
 {System.exit(1);}
 }
+```
+	GUI标题的窗口,有Dialog和Exit两个按钮,第一个按下会出现新窗口Dialog,内容是I'm a Dialog,这时Exit失效
+	
+
 **125**
 ```java
 //请在源程序文件夹中预先存放一张图片：1.jpg
@@ -1036,6 +1350,9 @@ public void paint(Graphics g)
 </body>
 </html>
 ```
+
+	背景色为黄色的网页,加载了1.jpg在网页左上角(30,10)
+	
 **126**
 ```java
 import java.awt.*;
@@ -1065,6 +1382,9 @@ public class A implements ActionListener
   {A a=new A();}
 }
 ```
+
+	一个计数器,按钮上显示计数,点击加一
+	
 **127**
 ```java
 import java.awt.*;
@@ -1095,6 +1415,9 @@ public class A extends JApplet implements ItemListener
  }
 }
 ```
+	
+	窗口背景色由三个单选按钮决定,分别是红绿蓝
+	
 **128**
 ```java
 import java.awt.*;
@@ -1123,6 +1446,9 @@ public class A extends Applet implements KeyListener
  public void keyReleased(KeyEvent e){}
 }
 ```
+	
+	显示窗体,按钮是电子科技大学,文字字体颜色由按键决定,R/G/B/F为红/绿/蓝/斜体加粗,ctrl+z恢复
+	
 **129**
 ```java
 import java.awt.*;
@@ -1186,6 +1512,9 @@ public class A extends Applet implements Runnable
     }
 }
 ```
+	
+	上一张下一张按钮,默认显示全红色图片,下一张依次是橙色,黄色,绿色,蓝色,可以循环
+	
 **131（1）**
 ```java
 import java.awt.*;
@@ -1213,6 +1542,9 @@ public class A implements MouseMotionListener
  {A a=new A();}
 }
 ```
+	
+	背景为黄色,可以显示鼠标位置坐标,大小为300*320的名为XXX的窗体
+	
 **131（2）**
 ```java
 import java.awt.*;
@@ -1235,6 +1567,9 @@ public class A extends JApplet implements MouseMotionListener
  }
 }
 ```
+	
+	背景为黄色,可以显示鼠标位置坐标,大小为200*200的无名窗体
+	
 **132**
 ```java
 import java.awt.*;
@@ -1260,6 +1595,9 @@ public class A extends JApplet implements MouseListener
  }
 }
 ```
+
+	背景为黄色,可以显示鼠标单击位置坐标,大小为200*200的无名窗体
+	
 **133**
 ```java
 import java.awt.*;
@@ -1295,6 +1633,9 @@ public class A extends JApplet implements ActionListener{
     }
 }
 ```
+
+	四个按钮,分别是+ - 0 清零,简易计数器
+	
 **134**
 ```java
 import java.io.*;import java.awt.*;import java.awt.event.*;
@@ -1359,6 +1700,9 @@ public static void main(String args[])
 {new A();}
 }
 ```
+
+	简易文本编辑器,有文件菜单,可以打开/关闭/保存/退出
+	
 **135**
 ```java
 import java.applet.Applet; import java.awt.*; import java.awt.event.*;
@@ -1392,7 +1736,7 @@ M(){addMouseListener(this);
 addMouseMotionListener(this);
 }
 public void paint(Graphics g)
-{for(int i=0;i<p.size();i++)//所有操作结果被重新画出
+{for(int i=0;i < p.size();i++)//所有操作结果被重新画出
 {Rectangle r=(Rectangle)p.elementAt(i);
 g.drawLine(r.x,r.y,r.width,r.height);}
 if(x1!=-1&&mode==0)//画当前直线
@@ -1418,6 +1762,9 @@ public void mouseExited(MouseEvent e){}
 public void mouseMoved(MouseEvent e){}
 }
 ```
+
+	绿色底,3个按钮,画线,画点,清除,简易作图
+	
 **136**
 ```java
 import java.awt.*;
@@ -1458,6 +1805,9 @@ public void mousePressed(MouseEvent e){}
 public static void main(String arg[]){new A();}
 }
 ```
+
+	文本编辑,右键弹出菜单复制/剪切/粘贴
+	
 **137**
 ```java
 import java.awt.*;
@@ -1521,6 +1871,9 @@ public void adjustmentValueChanged(AdjustmentEvent e)
 }
 }
 ```
+
+	显示电子科技大学的窗体,+ 和 - 两个按钮控制字号
+	
 **139**
 ```java
 import java.awt.*;
@@ -1573,6 +1926,9 @@ public class A implements ActionListener
  {A a=new A();a.init();}
 }
 ```
+
+	XXX窗体,黄色背景,显示文字电子科技大学,下拉菜单[设置字体],可以设置为黑体/隶书/方正姚体
+	
 **140**
 ```java
 public class A
@@ -1588,6 +1944,9 @@ System.out.println("剩余空间="+Runtime.getRuntime().freeMemory());
 }
 }
 ```
+
+	输出Java和系统信息,本类名/超类名/包名/操作系统/Java版本/内存总量/剩余空间
+	
 **141**
 ```java
 import java.awt.*;
@@ -1613,6 +1972,9 @@ return true;
 }
 }
 ```
+
+	用两个输入框显示鼠标当前位置坐标和单击位置坐标
+	
 **142**
 ```java
 import java.awt.*;
@@ -1624,20 +1986,20 @@ public void init()
 {setLayout(null);
 setSize(426,266);
 s=new R[10];
-for(int i=0;i<s.length;i++)
+for(int i=0;i < s.length;i++)
 s[i]=new R(this);
 }
 public void start()
-{for(int i=0;i<s.length;i++);
+{for(int i=0;i < s.length;i++);
 //s[i].start();//it started when it's constructed
 super.start();
 }
 public void stop()
-{for(int i=0;i<s.length;i++)s[i].suspend();
+{for(int i=0;i < s.length;i++)s[i].suspend();
 super.stop();
 }
 public void destroy()
-{for(int i=0;i<s.length;i++)s[i].stop();
+{for(int i=0;i < s.length;i++)s[i].stop();
 super.destroy();
 }
 public static void main(String[]args)//Applet和Application相统一 
@@ -1674,8 +2036,8 @@ b=true;this.start();
 }
 public void run()
 {while(true){x+=dx;y+=dy;
-if(x<0||x+w>a.getSize().width )dx=-dx;
-if(y<0||y+h>a.getSize().height)dy=-dy;
+if(x < 0||x+w>a.getSize().width )dx=-dx;
+if(y < 0||y+h>a.getSize().height)dy=-dy;
 Graphics g=a.getGraphics();
 switch(type){
 case 0:g.setColor(c);
@@ -1700,6 +2062,9 @@ try{Thread.sleep(130);}catch(InterruptedException e){}
 }
 }
 ```
+	
+	显示一些图形的运动轨迹,并且同步。
+	
 **143（1）**
 ```java
 import java.awt.*;
@@ -1733,6 +2098,9 @@ public class A implements ActionListener
  }
 }
 ```
+	
+	加减法两数运算,3个文本框,输入1 2后点 + -按钮自动计算并在3显示,有清除按钮
+	
 **143（2）**
 ```java
 import javax.swing.*;
@@ -1774,6 +2142,9 @@ public class A implements ActionListener
  }
 }
 ```
+
+	加减法两数运算,3个文本框,输入1 2后点 + -按钮自动计算并在3显示,有清除按钮
+
 **143（3）**
 ```java
 import java.awt.*;
@@ -1807,6 +2178,9 @@ public class A extends Applet implements ActionListener
 </applet>
 </html>
 ```
+
+	网页版本:加减法两数运算,3个文本框,输入1 2后点 + -按钮自动计算并在3显示,有清除按钮
+	
 **143（4）**
 ```java
 import javax.swing.*;
@@ -1846,6 +2220,9 @@ public class A extends JApplet implements ActionListener
 </applet>
 </html>
 ```
+
+	网页版本:加减法两数运算,3个文本框,输入1 2后点 + -按钮自动计算并在3显示,有清除按钮
+	
 **144（1）**
 ```
 import java.awt.*;
@@ -1887,6 +2264,9 @@ e){z--;if(z==0)System.exit(0);else f2.setVisible(false);}});}f2.setVisible(true)
   }
 }
 ```
+
+	登陆框,用户名efg,密码456,登录失败有次数显示,错误之后点重填会清除用户名
+	
 **144（2）**
 ```
 import java.awt.*;
@@ -1922,6 +2302,9 @@ e){f1.setVisible(false);}});}
   }
 }
 ```
+
+	登陆框,用户名efg,密码456,登录失败有次数显示,错误之后点重填会清除用户名
+
 **145（1）**
 ```java
 import java.awt.*;
@@ -1990,6 +2373,9 @@ public class A extends WindowAdapter implements ActionListener
     }
 }
 ```
+
+	猜数字游戏,显示第几次,输入框写数字,提交按钮后显示大了或小了,有重新开始按钮
+	
 **145（2）**
 ```java
 import java.awt.*;
@@ -2139,8 +2525,13 @@ public class A extends JApplet
   }
 }
 ```
+
+	猜数字游戏,显示第几次,输入框写数字,提交按钮后显示大了或小了,有重新开始按钮
+	但是可以设置被猜数字的区间和次数限制,还多了重填和退出按钮
+
+
 **147**
-```
+```java
 import java.awt.*;
 import java.awt.event.*;
 public class A extends WindowAdapter implements ActionListener
@@ -2179,6 +2570,9 @@ public class A extends WindowAdapter implements ActionListener
   }
 }
 ```
+
+	XXX窗体,AA菜单有两个选项11和22,两个按钮显示/隐藏,可以控制电子科技大学显示或隐藏
+	
 **148**
 ```java
 //本程序需要预先用Windows的画图等软件制作准备3张图片：jia.ico、jian.ico、zero.ico
@@ -2230,6 +2624,9 @@ public class A extends JFrame implements ActionListener
        }
 }
 ```
+
+	加/减/清零按钮加载本地图标,计数器
+	
 **149**
 ```java
 import java.awt.*;
@@ -2276,6 +2673,9 @@ public class A implements ActionListener
  {A a=new A();a.init();}
 }
 ```
+
+	窗口默认背景是黄色,菜单设置背景颜色,可选择红/绿/蓝/还原
+	
 **150**
 ```java
 import java.awt.*;
@@ -2308,3 +2708,5 @@ public void actionPerformed(ActionEvent e)//处理按钮事件
 }
 }
 ```
+
+	窗口有4个输入框,输入十进制转换成2,8,16进制
