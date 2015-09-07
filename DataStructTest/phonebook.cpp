@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdarg>
+#include <map>
 using namespace std;
 
 int max(int a, int b,...)
@@ -19,5 +20,9 @@ int max(int a, int b,...)
 int main()
 {
 
-    max(1,2,3,4,5,6,7,8,9,-1);
+    map<string, string> phone2name;
+    phone2name.insert(map<string, string>::value_type("186837","wang"));
+
+    auto search = phone2name.find("186837");
+    cout<<search<<endl;
 }
