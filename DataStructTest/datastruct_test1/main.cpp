@@ -5,16 +5,20 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	PhoneBook phonebook;
-	phonebook.AddStudent("wang","he","183");
-	phonebook.PrintInfoByName("wang");
-	phonebook.AddStudent("wang","1","123");
-	phonebook.PrintInfoByName("wang");
+
+
+//	phonebook.AddStudent("wang","he","");
+//	phonebook.PrintInfoByName("wang");
+//	phonebook.AddPhone2Name("wang", "");
+//	phonebook.PrintInfoByName("wang");
+//	phonebook.AddStudent("wang","1","123");
+//	phonebook.PrintInfoByName("wang");
 //	struct stu student = phonebook.GetInfoByName("wang");
 //	std::cout<<student.name<<std::endl;
 //	std::cout<<student.address<<std::endl;
-//	for (vector<string>::iterator i = student.phoneNumber.begin(); i != student.phoneNumber.end(); i++)
+//	for (auto it : student.phoneNumber)
 //	{
-//		std::cout<<(*i)<<std::endl;
+//		std::cout << it << ",";
 //	}
 
 
