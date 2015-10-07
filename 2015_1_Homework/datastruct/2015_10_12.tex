@@ -1,10 +1,360 @@
 \documentclass{article}
 
-\usepackage{graphicx}
+	\author{王贺，2014060102018}
+	\title{2015.10.12,数据结构与算法作业1}
+\usepackage{ctex}
+\usepackage{minted}
+\usepackage{clrscode}
+
+
 
 \begin{document}
+	\maketitle
+\section{Question 1} 
+
+将两个递增的有序链表合并为一个递增的有序链表。要求结果链表仍使用原来两个链表的存储空间，不另外占用其他的存储空间。表中不允许有重复的数据。
+
+\subsection{语言描述} 
+
+ListA，ListB合并到ListC\\
+
+1）选取ListA和ListB第一个数据较小的添加到ListC，将较小的那个指向后继后删除路过的结点\\
+
+2）比较ListA和ListB当前数据，将较小的添加到ListC中，如果出现相同的则删除其一，直至链表尾\\
+
+3）将当前不为空的后继所有结点依次添加到ListC中\\
+
+\subsection{伪代码描述}
 
 
-	123123123
+
+\begin{codebox}
+\Procname{$\proc{mergeList(A)}$}
+\li $la \gets ListA$
+\li $lb \gets ListB$
+\li $lc \gets ListC$
+\li \If  $la.data < lb.data$				 
+\li 	\Then
+\li			$lc \gets la$
+\li 		$la \gets del(la)$
+\li 	\Else
+\li     	$lc \gets lb$
+\li 		$lb \gets del(lb)$
+	    \End
+\li \While $la.next \neq null\ \  and\ \  lb.next \neq null $  
+\li 	\Do
+\li	 	\If $ la.data = lb.data $  
+\li 		\Then 
+\li 			$ append(lc, la, True) $
+\li 		\Else
+\li 			\If $ la.data < lb.data $
+\li					\Then
+\li 					$ append(lc, la, False) $
+\li 				\Else
+\li 					 $ append(lc, lb, False) $
+	 			\End
+	  	\End
+	 	\End
+\li  	\If $ la.next = NULL $
+\li 		\Then 
+\li  			$ lc.next \gets lb $
+\li 		\Else
+\li			$ lc.nect \gets la $
+	 	\End
+		
+
+\end{codebox}
+
+
+
+\subsection{代码描述}
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+    struct node
+    {
+        int data;
+        struct node* next;
+    }*LinkNode, Linklist;
+
+
+    LinkNode del(LinkNode  l)
+    {
+        LinkNode temp = l;
+        l = l ->next;
+        //delete temp;
+        return l;
+    }
+
+    LinkNode append(LinkNode front, LinkNode next, erase = Flase)
+    {	
+    
+        LinkNode temp = front -> next;           //save front's next
+        front -> next = next;           //insert
+        front -> next -> next = temp;   //update the insert
+        next = next -> next;            //update next
+        if (erase)                       //delete
+        {
+            del(next);
+        }
+    }
+
+    void mergeList(LinkList ListA, LinkList ListB, LinkList &ListC)
+    {
+        LinkNode la,lb,lc;
+        la = ListA;
+        lb = ListB;
+        lc = ListC;
+        la -> data < lb -> data ? {lc = la; la = del(la);} : {lc = lb; lb = del(lb);};
+
+        while (la -> next != NULL && lb -> next != NULL)
+        {
+            if (la -> data == lb -> data)
+            {
+                append(lc, la, True);
+            }
+            else
+            {
+                la -> data < lb -> data ? append(lc, la, False) : append(lc, lb, False);
+            }
+        }
+        la -> next == NULL ? lc -> next = lb : lc -> next = la;
+    }
+
+
+
+
+\end{minted}
+
+
+
+
+
+
+
+
+
+
+\section{Question 2} 
+
+将两个非递减的有序链表合并为一个非递增的有序链表。要求结果链表仍使用原来两个链表的存储空间，不另外占用其他的存储空间。表中允许有重复的数据。
+
+
+\subsection{语言描述} 
+
+1）以ListA，ListB小的元素结点为跟踪标识，并定义扫描标识\\
+2）扫描标识数据位比较，取小的，并将取走后的标识位后移（删除无用的头结点）\\
+3）更新上一步骤取走的结点的后继为跟踪标识，更新跟踪标识为这个结点\\
+4）回到步骤2直至一链表为空，则重复3填充跟踪标识\\
+
+\subsection{伪代码描述}
+
+
+
+\begin{codebox}
+\Procname{$\proc{mergeList(B)}$}
+
+\li \If $ ListA.data <= ListB.data $
+\li 	\Then 
+\li 		$ li \gets ListA$
+\li 		$ scannerA \gets ListA.next $
+\li 		$ scannerB \gets ListB $
+\li 		\Comment if delete 
+\li 		$ delete ListA$		
+\li 	\Else
+\li 		$ li \gets ListB $
+\li 		$ scannerB \gets ListB.next $
+\li 		$ scannerA \gets ListA $
+\li 		\Comment if delete 
+\li 		$ delete ListB$		
+	\End
+\li \While $ scannerA \neq NULL\ \ and \ \ scannerB \neq NULL $
+\li 	\Do
+\li 	\If $ scannerA.data <= scannerB.data $
+\li 		\Then 
+\li 			$ li \gets li.next \gets scannerA $
+\li 			$ scannerA \gets scannerA.next $
+\li 		\Else
+\li 			$ li \gets li.next \gets scannerA  $
+\li 			$ scannerB \gets scannerB.next $
+		\End
+	\End
+\li \If $ scannerA = NULL $
+\li 	\Then 
+\li 		$ scanner \gets scannerB $
+\li 	\Else
+\li 		$ scanner \gets scannerA $
+	\End	
+\li \While $ scanner \neq NULL $
+\li 	\Do
+\li 		$ li \gets li.next \gets scanner $
+\li 		$ scanner \gets scanner.next $
+\end{codebox}
+
+
+
+\subsection{代码描述}
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+    void mergeList(LinkList &ListA, LinkList &ListB)
+    {
+        LinkNode scannerA,scannerB,li;
+        scannerA = scannerB = li = NULL;
+
+        if (ListA -> data <= ListB -> data)
+        {
+            li = ListA;
+            scannerA = ListA -> next;
+            scannerB = ListB;
+            //delete ListA;
+        }
+        else
+        {
+            li = ListB;
+            scannerB = ListB -> next;
+            scannerA = ListA;
+            //delete ListB;
+        }
+
+        while (scannerA != NULL && scannerB != NULL)
+        {
+            if (scannerA -> data <= scannerB -> data)
+            {
+                li = li -> next = scannerA;
+                scannerA = scannerA -> next;
+            }
+            else
+            {
+                li = li -> next = scannerB;
+                scannerB = scannerB -> next;
+            }
+        }
+        LinkNode scanner = NULL;
+        scanner = scannerA == NULL ? scannerB : scannerA;
+        while (scanner != NULL)
+        {
+            li = li -> next = scanner;
+            scanner = scanner -> next;
+        }
+    }
+
+\end{minted}
+
+\section{Question 3} 
+
+设计一个算法，通过一趟遍历在单链表中确定值最大的结点。
+
+
+\subsection{语言描述} 
+
+1)跟踪标识为头数据结点，扫描标识为下一个结点
+2）比较两标识数据，如果跟踪标识小，则移动跟踪标识；否则扫描标识后移
+3）当扫描标识为空，跟踪标识为最大
+
+\subsection{伪代码描述}
+
+
+
+\begin{codebox}
+\Procname{$\proc{findMax}$}
+
+
+\end{codebox}
+
+
+
+\subsection{代码描述}
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+
+
+\end{minted}
+
+\section{Question 4} 
+
+设计一个算法，通过一趟遍历，将链表中所有结点的链接方向逆转，且仍利用原表的存储空间。
+
+
+\subsection{语言描述} 
+
+
+
+\subsection{伪代码描述}
+
+
+
+\begin{codebox}
+\Procname{$\proc{mergeList(B)}$}
+
+
+\end{codebox}
+
+
+
+\subsection{代码描述}
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+
+
+\end{minted}
+
+\section{Question 5} 
+
+
+将编号为0和1的两个栈存放于一个数组空间V[m]中，栈底分别处于数组的两端。当第0号栈的栈顶指针top[0]等于-1时该栈为空；当第1号栈的栈顶指针top[1]等于m时，该栈为空。两个栈均从两端向中间增长。试编写双栈初始化，判断栈空、栈满、进栈和出栈等算法的函数。双栈数据结构的定义如下：
+  typedef struct{
+    int top[2], bot[2];  //栈顶和栈底指针
+　  SElemType *V;      	//栈数组 
+    int m;          	//栈最大可容纳元素个数
+  }DblStack;
+
+
+\subsection{语言描述} 
+
+
+
+\subsection{伪代码描述}
+
+
+
+\begin{codebox}
+\Procname{$\proc{mergeList(B)}$}
+
+
+\end{codebox}
+
+
+
+\subsection{代码描述}
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+
+
+\end{minted}
+
 
 \end{document}
