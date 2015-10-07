@@ -16,13 +16,13 @@
 
 \subsection{语言描述} 
 
-ListA，ListB合并到ListC\\
+ListA，ListB合并到ListC\par
 
-1）选取ListA和ListB第一个数据较小的添加到ListC，将较小的那个指向后继后删除路过的结点\\
+1）选取ListA和ListB第一个数据较小的添加到ListC，将较小的那个指向后继后删除路过的结点\par
 
-2）比较ListA和ListB当前数据，将较小的添加到ListC中，如果出现相同的则删除其一，直至链表尾\\
+2）比较ListA和ListB当前数据，将较小的添加到ListC中，如果出现相同的则删除其一，直至链表尾\par
 
-3）将当前不为空的后继所有结点依次添加到ListC中\\
+3）将当前不为空的后继所有结点依次添加到ListC中
 
 \subsection{伪代码描述}
 
@@ -75,7 +75,7 @@ ListA，ListB合并到ListC\\
                gobble=2,
                frame=lines,
                framesep=2mm]{csharp}
-    struct node
+    typedef struct
     {
         int data;
         struct node* next;
@@ -146,10 +146,10 @@ ListA，ListB合并到ListC\\
 
 \subsection{语言描述} 
 
-1）以ListA，ListB小的元素结点为跟踪标识，并定义扫描标识\\
-2）扫描标识数据位比较，取小的，并将取走后的标识位后移（删除无用的头结点）\\
-3）更新上一步骤取走的结点的后继为跟踪标识，更新跟踪标识为这个结点\\
-4）回到步骤2直至一链表为空，则重复3填充跟踪标识\\
+1）以ListA，ListB小的元素结点为跟踪标识，并定义扫描标识\par
+2）扫描标识数据位比较，取小的，并将取走后的标识位后移（删除无用的头结点）\par
+3）更新上一步骤取走的结点的后继为跟踪标识，更新跟踪标识为这个结点\par
+4）回到步骤2直至一链表为空，则重复3填充跟踪标识
 
 \subsection{伪代码描述}
 
@@ -256,17 +256,23 @@ ListA，ListB合并到ListC\\
 
 \subsection{语言描述} 
 
-1)跟踪标识为头数据结点，扫描标识为下一个结点
-2）比较两标识数据，如果跟踪标识小，则移动跟踪标识；否则扫描标识后移
+1)跟踪标识为头数据结点，扫描标识为下一个结点\par
+2）比较两标识数据，如果跟踪标识小，则移动跟踪标识；否则扫描标识后移\par
 3）当扫描标识为空，跟踪标识为最大
 
 \subsection{伪代码描述}
-
-
-
 \begin{codebox}
 \Procname{$\proc{findMax}$}
 
+\li $maxNode \gets list$
+\li $ cursor \gets list.next$
+\li \While $ cursor \neq NULL $
+\li 	\Do
+\li 	\If $ maxNode.data < cursor.data $
+\li 		\Then 
+\li 			$ maxNode \gets cursor $
+		\End
+\li $ cursor \gets cursor.next $  
 
 \end{codebox}
 
@@ -280,7 +286,20 @@ ListA，ListB合并到ListC\\
                gobble=2,
                frame=lines,
                framesep=2mm]{csharp}
+    void findMax(LinkList list)
+    {
+        LinkNode maxNode = list;
+        LinkNode cursor = list -> next;
 
+        while(cursor != NULL)
+        {
+            if (maxNode -> data < cursor -> data)
+            {
+                maxNode = cursor;
+            }
+            cursor = cursor -> next;
+        }
+    }
 
 \end{minted}
 
@@ -291,15 +310,25 @@ ListA，ListB合并到ListC\\
 
 \subsection{语言描述} 
 
-
+1)跟踪结点为头结点，保存跟踪结点的后继为扫描结点，将头结点后继指向null，跟踪结点更新到扫描结点\par
+2）保存跟踪结点的后继为扫描结点，将跟踪结点后继指向跟踪结点本身，跟踪结点更新到扫描结点\par
 
 \subsection{伪代码描述}
 
 
 
 \begin{codebox}
-\Procname{$\proc{mergeList(B)}$}
-
+\Procname{$\proc{reverse}$}
+\li $ tracker \gets list $
+\li $ cursor \gets list.next $
+\li $ list.next \gets NULL$
+\li \While $ cursor \neq NULL $
+\li 	\Do
+\li 		$ cursor \gets tracker.next $
+\li 	 	$ tracker.next \gets tracker $
+\li 		$ tracker \gets cursor $
+	\End
+\li \Return $ tracker $ 
 
 \end{codebox}
 
@@ -313,35 +342,38 @@ ListA，ListB合并到ListC\\
                gobble=2,
                frame=lines,
                framesep=2mm]{csharp}
-
+    LinkNode reverse(LinkList& list)
+    {
+        LinkNode tracker = list;
+        LinkNode cursor = list -> next;
+        list -> next = NULL;
+        while (cursor != NULL)
+        {
+            cursor = tracker -> next;
+            tracker -> next = tracker;
+            tracker = cursor;
+        }
+        return tracker;
+    }
 
 \end{minted}
 
 \section{Question 5} 
 
 
-将编号为0和1的两个栈存放于一个数组空间V[m]中，栈底分别处于数组的两端。当第0号栈的栈顶指针top[0]等于-1时该栈为空；当第1号栈的栈顶指针top[1]等于m时，该栈为空。两个栈均从两端向中间增长。试编写双栈初始化，判断栈空、栈满、进栈和出栈等算法的函数。双栈数据结构的定义如下：
-  typedef struct{
-    int top[2], bot[2];  //栈顶和栈底指针
-　  SElemType *V;      	//栈数组 
-    int m;          	//栈最大可容纳元素个数
-  }DblStack;
-
-
-\subsection{语言描述} 
-
-
-
-\subsection{伪代码描述}
-
-
-
-\begin{codebox}
-\Procname{$\proc{mergeList(B)}$}
-
-
-\end{codebox}
-
+将编号为0和1的两个栈存放于一个数组空间V[m]中，栈底分别处于数组的两端。当第0号栈的栈顶指针top[0]等于-1时该栈为空；当第1号栈的栈顶指针top[1]等于m时，该栈为空。两个栈均从两端向中间增长。试编写双栈初始化，判断栈空、栈满、进栈和出栈等算法的函数。双栈数据结构的定义如下：\par
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+    typedef struct{
+        int top[2], bot[2];  //栈顶和栈底指针
+        SElemType *V;        //栈数组 
+        int m;               //栈最大可容纳元素个数
+    }DblStack;
+\end{minted}
 
 
 \subsection{代码描述}
@@ -352,7 +384,73 @@ ListA，ListB合并到ListC\\
                gobble=2,
                frame=lines,
                framesep=2mm]{csharp}
+    typedef struct
+    {
+        int top[2], bot[2];  //栈顶和栈底指针
+        SElemType *V;        //栈数组 
+        int m;              //栈最大可容纳元素个数
+    }DblStack;
 
+    void initDblStack(DblStack& s, SElemType size)
+    {
+        s.m = size;
+        s.V = new SElemType(size);
+        s.top[0] = s.bot[0] = -1;
+        s.top[1] = s.bot[1] = size -1;
+    }
+
+
+
+    int IsEmpty(DblStack s, int i)
+    {
+        if (i == 0)
+        {
+            return s.top[0] == -1 ? 1 : 0;
+        }
+        else if (i == 1)
+        {
+            return s.top[1] == s.m ? 1 : 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    int IsFull(DblStack s)
+    {
+        return s.top[1]-s.top[0] > 0 ? 0 : 1;
+    }
+
+    void Dblpush(DblStack &s,SElemType x,int i)
+    {
+        if (i == 0 && s.top[0] + 1 < s.top[1])
+        {
+           s.V[++s.top[0]] = x;
+        }
+        else if (i == 1 && s.top[1] - 1 > s.top[0])
+        {
+            s.V[--s.top[1]] = x;
+        }
+
+    }
+
+    int Dblpop(DblStack &s,int i,SElemType &x)
+    {
+        if (i == 0 && !IsEmpty(s, i))
+        {
+            x = s.V[top[0]--];
+        }
+        else if (i == 1 && !IsEmpty(s, i))
+        {
+            x = s.V[top[1]++];
+        }
+        else
+        {
+            return 0;
+        }
+        return 1;
+    }
 
 \end{minted}
 
