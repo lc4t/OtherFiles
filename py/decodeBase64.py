@@ -1,55 +1,35 @@
 #-*-coding:utf-8-*-
+__author__='lc4t'
 import base64
 
+def fourChar(seq, encoding = 'utf-8'):
+    encoding = encoding.lower()
+    for a in [seq[0].lower(), seq[0].upper()]:
+        for b in [seq[1].lower(), seq[1].upper()]:
+            for c in [seq[2].lower(), seq[2].upper()]:
+                for d in [seq[3].lower(), seq[3].upper()]:
+                    string = a + b + c + d
+                    try:
+                        ans = base64.b64decode(string).decode(encoding)
+                        if (encoding == 'utf-8'):
+                            for i in ans:
+                                assert 32 <= ord(i) <= 126
+                        return ans
+                    except Exception as e:
+                        pass
 
-
-#must begin from little
-def convert4(four):
-    if (four[3].islower()):#***d
-        four = four[0:3] + four[3].upper()#***D
-    elif (four[2].islower()):#**cD
-        four = four[0:2] + four[2].upper() + four[3].lower()#**Cd
-    elif (four[1].islower()):#*bCD
-        four = four[0:1] + four[1].upper() + four[2:4].lower()#*Bcd
-    elif (four[0].islower()):#aBCD
-        four = four[0].upper() + four[1:4].lower()
-    else:
-        return '#'
-    return four
-
-def isOK(string):
-    string = string.replace('\r\n','').replace('\r\n','').replace(' ','')
-    return string.isalnum()
-def decode(s):
-    equle = 4 - len(s) % 4
-    if (equle != 4):
-        s += '=' * equle
-        print 'new:' + s
-    result = ''
-    base = ''
-    for i in range(0,len(s),4):
-        now = s[i:i+4]
-
-        try:
-            ans = base64.b64decode(now)
-        except:
-            pass
-
-        if isOK(ans):
-            base += now
-            result += ans
-            continue
+def main():
+    IN = input('input string:')
+    ans = ''
+    for seqID in range(0, len(IN), 4):
+        seq = IN[seqID:seqID+4]
+        req = fourChar(seq)
+        if req != None:
+            ans += req
         else:
-            while(not isOK(ans)):
-                now = convert4(now)
-                if (now == '#'):
-                    exit('Not base64')
-                ans = base64.b64decode(now)
-                # print ans
-        base += now
-        result += ans
-    print base
-    print result
+            print ('None @', seqID) 
+    print (ans)
 
 
-decode('KMGFKYIIMGQAAJERYUGCTYILQJTMDFBNDCFOTCXNGUWOTCBDJBKGZHOKYRDFYJYHGXFKIHVGELWFPKNNTCXNGUWOTCBDJBFGZFIGFFKKOWIGGCVIUIRIADAAGQJFYRGKKICTNXKKRIKYJCDUUUIRBNDCFYGEIQJXSYAPNVMNZCHVQKNPJWRXTPMEITCXNGUWOTCBDJBFLVBFMFQENCGKZVIOJYXHYCGKZAIJSVPILWDJLAVYKFNTCYLUWOTCBDJBCZHAWLOPNRCYURGXCZHAXHIMIFNIKBYKAUIZRLQRGEZGFYZWOTCCOIMCRBNDCFMQMUQRMSRTOLNOYVCIILRSXLLNMILLCGWMYDUAEOKWKQGMGVTUKMRPGSGWEKNXCFOWBUKQGMGVTUOFIKUMMZRMWPNXKQGMGVTUOHVFBZMMFDGQJUJIKFTYOSFAWMCVKUXXKJMDFDECVWCMCVKIAVGELWFPKNUFGNBGKYPMCKHFWVUAHEJAQAGXZDFKKOOKKWYGWCNAMAGBCWRVZVXZUOPLJRSAJXKUMKVXZYFKUHLMSAJXOIGKVXZSFORMSAJXKUKMCAJWYGFWIKMWNFQYFJKWKQIFVLNLDEUMXFPBTCOZQJGBVTSOV'.lower())
+if __name__ == '__main__':
+    main()
