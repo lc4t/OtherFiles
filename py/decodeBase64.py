@@ -20,6 +20,7 @@ def fourChar(seq, encoding = 'utf-8'):
 
 def main():
     IN = input('input string:')
+    
     ans = ''
     for seqID in range(0, len(IN), 4):
         seq = IN[seqID:seqID+4]
