@@ -14,23 +14,6 @@ from bs4 import BeautifulSoup
 class Query:
     def __init__(self):
         pass
-    def Sushe(self, ticket, name):
-        ticket = str(ticket)
-        name = urllib.parse.quote(name)
-        url = 'http://www.chsi.com.cn/cet/query?zkzh='+ticket+'&xm='+name
-        headers = {
-        'Host': 'www.chsi.com.cn',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
-        'Referer': 'http://www.chsi.com.cn/cet/',
-        }
-        request = urllib.request.Request(url,headers=headers)
-        result = urllib.request.urlopen(request)
-        html = BeautifulSoup(result.read(),) 
-        p = html.find_all(class_='cetTable')
-        ans = p[0].get_text()
-        return ans.replace(' ','').replace('\n','').replace('\t','').replace('\r','').replace('姓名：',' ').replace('学校：',' ').replace('考试类别：',' ').replace('准考证号：',' ').replace('考试时间：',' ').replace('总分：',' ').replace('听力：',' ').replace('阅读：',' ').replace('写作与翻译：',' ')
     def Chsi(self, ticket, name):
         ticket = str(ticket)
         name = urllib.parse.quote(name)
@@ -42,19 +25,29 @@ class Query:
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
         'Referer': 'http://www.chsi.com.cn/cet/',
         }
+        
         request = urllib.request.Request(url,headers=headers)
-        result = urllib.request.urlopen(request)
-        # proxy={'host':'127.0.0.1','port':10801}
-        # proxy_support = http.request.ProxyHandler({"http" : "http://%(host)s:%(port)d" % proxy})
-        # opener = http.request.build_opener(proxy_support)
-        # http.request.install_opener(opener)
-        # request = http.request.Request(url = url,headers = headers)
-        # result = opener.open(self.request)
-        html = BeautifulSoup(result.read())
+        # request.set_proxy(host = '127.0.0.1:10801', type = 'http')
+        result = urllib.request.urlopen(request, )
+        html = BeautifulSoup(result.read()) 
         p = html.find_all(class_='cetTable')
         ans = p[0].get_text()
         return ans.replace(' ','').replace('\n','').replace('\t','').replace('\r','').replace('姓名：',' ').replace('学校：',' ').replace('考试类别：',' ').replace('准考证号：',' ').replace('考试时间：',' ').replace('总分：',' ').replace('听力：',' ').replace('阅读：',' ').replace('写作与翻译：',' ')
-
+    def Sushe(self, ticket, name):
+        ticket = str(ticket)
+        url = 'http://cet.99sushe.com/findscore'
+        headers = {
+        # 'Host': 'www.chsi.com.cn',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
+        'Referer': 'http://cet.99sushe.com/',
+        'Origin': 'http://cet.99sushe.com',
+        }
+        request = urllib.request.Request(url,headers=headers)
+        result = urllib.request.urlopen(request).read()
+        print (result)
+        exit(0)
 
 class CreateXLS:
     def __init__(self, fileName, sheetName):
@@ -99,7 +92,7 @@ class CreateXLS:
         length = len(data)
         for i in range(0,length,1):
             data[i] = data[i].replace('\n','').split()
-            dataAns.append(q.Sushe(data[i][0],data[i][1]))
+            dataAns.append(q.Chsi(data[i][0],data[i][1]))
             ans = dataAns[i].split()
             self.SaveAns(i + 1,ans[0],ans[1],ans[2],ans[3],ans[4],ans[5],ans[6],ans[7],ans[8],data[i][2],data[i][3],data[i][4],data[i][5],)
             print (str(i+1)+'/'+str(length)+dataAns[i])
