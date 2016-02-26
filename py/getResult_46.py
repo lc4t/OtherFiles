@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 __author__ = 'lc4t'
 
+import requests
 import urllib.request
 import urllib.parse
 import http.cookiejar
@@ -35,7 +36,9 @@ class Query:
         return ans.replace(' ','').replace('\n','').replace('\t','').replace('\r','').replace('姓名：',' ').replace('学校：',' ').replace('考试类别：',' ').replace('准考证号：',' ').replace('考试时间：',' ').replace('总分：',' ').replace('听力：',' ').replace('阅读：',' ').replace('写作与翻译：',' ')
     def Sushe(self, ticket, name):
         ticket = str(ticket)
-        url = 'http://cet.99sushe.com/findscore'
+        # proxies = {
+        #     'http': 'http://127.0.0.1:8080',
+        # }
         headers = {
         # 'Host': 'www.chsi.com.cn',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -44,10 +47,9 @@ class Query:
         'Referer': 'http://cet.99sushe.com/',
         'Origin': 'http://cet.99sushe.com',
         }
-        request = urllib.request.Request(url,headers=headers)
-        result = urllib.request.urlopen(request).read()
-        print (result)
-        exit(0)
+        request = requests.post('http://cet.99sushe.com/findscore',data = { 'id':ticket,'name':name.encode('GBK') }, headers = headers, cookies = {'score':''}, )#proxies = proxies)
+        result = str(request.text).split(',')
+        return ([name, result[0] + '级', ticket, result[4], result[1], result[2], result[3]])
 
 class CreateXLS:
     def __init__(self, fileName, sheetName):
@@ -87,44 +89,44 @@ class CreateXLS:
         f = open(inputFile,'r')
         data = f.readlines()
         q = Query()
+        function = 'sushe'
         dataAns = []
         self.SaveAns_init()
         length = len(data)
-        for i in range(0,length,1):
-            data[i] = data[i].replace('\n','').split()
-            dataAns.append(q.Chsi(data[i][0],data[i][1]))
-            ans = dataAns[i].split()
-            self.SaveAns(i + 1,ans[0],ans[1],ans[2],ans[3],ans[4],ans[5],ans[6],ans[7],ans[8],data[i][2],data[i][3],data[i][4],data[i][5],)
-            print (str(i+1)+'/'+str(length)+dataAns[i])
+        if (function == 'chsi'):
+            for i in range(0,length,1):
+                data[i] = data[i].replace('\n','').split()
+                dataAns.append(q.Chsi(data[i][0],data[i][1]))
+                ans = dataAns[i].split()
+                self.SaveAns(i + 1,ans[0],ans[1],ans[2],ans[3],ans[4],ans[5],ans[6],ans[7],ans[8],data[i][2],data[i][3],data[i][4],data[i][5],)
+                print (str(i+1)+'/'+str(length)+dataAns[i])
+        elif (function == 'sushe'):
+            for i in range(0,length,1):
+                data[i] = data[i].replace('\n','').split()
+                dataAns.append(q.Sushe(data[i][0],data[i][1]))
+                ans = dataAns[i]
+                self.SaveAns(i + 1, ans[0], ans[1], ans[2], ans[3], ans[4], ans[5], ans[6])
+                print (str(i+1)+'/'+str(length)+str(dataAns[i]))
+        else:
+            exit(0)
+
     def SaveAns_init(self):
         self.workSheet.write(0,0,u'姓名')
-        self.workSheet.write(0,1,'学校')
-        self.workSheet.write(0,2,u'考试类别')
-        self.workSheet.write(0,3,u'准考证号')
-        self.workSheet.write(0,4,u'考试时间')
-        self.workSheet.write(0,5,u'总分')
-        self.workSheet.write(0,6,u'听力')
-        self.workSheet.write(0,7,u'阅读')
-        self.workSheet.write(0,8,u'写作与翻译')
-        self.workSheet.write(0,9,u'学院')
-        self.workSheet.write(0,10,u'年级')
-        self.workSheet.write(0,11,u'班级')
-        self.workSheet.write(0,12,u'学号')
+        self.workSheet.write(0,1,u'考试类别')
+        self.workSheet.write(0,2,u'准考证号')
+        self.workSheet.write(0,3,u'总分')
+        self.workSheet.write(0,4,u'听力')
+        self.workSheet.write(0,5,u'阅读')
+        self.workSheet.write(0,6,u'写作与翻译')
         self.Save()
-    def SaveAns(self,index,name,school,exam,ticket,data,total,number1,number2,number3,college,grade,classN,stuCode):
+    def SaveAns(self,index,name,exam,ticket,total,listenNumber,readNumber,writeNumber):
         self.workSheet.write(index,0,name)
-        self.workSheet.write(index,1,school)
-        self.workSheet.write(index,2,exam)
-        self.workSheet.write(index,3,ticket)
-        self.workSheet.write(index,4,data)
-        self.workSheet.write(index,5,total)
-        self.workSheet.write(index,6,number1)
-        self.workSheet.write(index,7,number2)
-        self.workSheet.write(index,8,number3)
-        self.workSheet.write(index,9,college)
-        self.workSheet.write(index,10,grade)
-        self.workSheet.write(index,11,classN)
-        self.workSheet.write(index,12,stuCode)
+        self.workSheet.write(index,1,exam)
+        self.workSheet.write(index,2,ticket)
+        self.workSheet.write(index,3,total)
+        self.workSheet.write(index,4,listenNumber)
+        self.workSheet.write(index,5,readNumber)
+        self.workSheet.write(index,6,writeNumber)
         self.Save()
     def Save(self):
         self.workBook.save(self.fileName)
