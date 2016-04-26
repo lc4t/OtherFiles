@@ -3,7 +3,7 @@
 function disk()
 {
     echo 'Loading...'
-    du -ks $@ | sort -n  | awk '
+    sudo du -ks $@ | sort -n  | awk '
                                 BEGIN{
                                     FS="\t";
                                     OFS="\t";
@@ -37,7 +37,8 @@ function disk()
 function findLargeFile()
 {   
     echo 'Loading...'
-    du -a $@ | sort -n -r | awk '
+    # ls -alR $@ | grep ^- | sort -n -k 5 | tail -1     # no path to this file
+    sudo du -a $@ | sort -n -r | awk '
                                 BEGIN{
                                     FS="\t";
                                     OFS="\t";
@@ -58,7 +59,7 @@ function findLargeFile()
 function cppRowCountSum()
 {
     echo 'Loading...'
-    find $@ -name "*.cpp" -o -name "*.h" | xargs wc -l 2>/dev/null
+    sudo find $@ -name "*.cpp" -o -name "*.h" | xargs wc -l 2>/dev/null
     echo ''
 }
 
