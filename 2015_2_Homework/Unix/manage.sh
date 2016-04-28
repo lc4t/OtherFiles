@@ -111,11 +111,11 @@ function checkService()
                     case $controller in
                         "service")
                             # echo "service enable"
-                            service $serviceName $option
+                            sudo service $serviceName $option
                             ;;
                         "systemctl")
                             # echo "systemctl enable";
-                            systemctl $option $serviceName
+                            sudo systemctl $option $serviceName
                             ;;
                         "*")
                             echo "Ah ha?"
