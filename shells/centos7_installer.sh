@@ -49,7 +49,7 @@ function shadowsocksInstall()
 
 function supervisorInstall()
 {
-    yum install pip
+    easy_install pip
     pip install supervisor
     filename="shadowsocks.json"
     read -p "Input ss filename[shadowsocks.json]:" filename
