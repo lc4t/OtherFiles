@@ -229,8 +229,8 @@ function metasploitInstall()
 
 function main()
 {
-    yum install update
-    yum install upgrade
+    yum update
+    yum upgrade
     yum install tmux wget git vim
     userInput='NULL'
     while [ $userInput != 'exit' ] && [ $userInput != 'q' ]
