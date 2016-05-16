@@ -35,7 +35,7 @@ function disk()
 
 
 function findLargeFile()
-{   
+{
     echo 'Loading...'
     # ls -alR $@ | grep ^- | sort -n -k 5 | tail -1     # no path to this file
     sudo du -a $@ | sort -n -r | awk '
@@ -133,7 +133,7 @@ function checkService()
 
 function main()
 {
-    userInput='NULL' 
+    userInput='NULL'
     while [ $userInput != 'exit' ] && [ $userInput != 'q' ]
         do
             echo '       Please input the NUM.'
@@ -197,7 +197,7 @@ function main()
                 else
                     userInput='NULL'
                 fi
-        done    
+        done
 }
 
 
