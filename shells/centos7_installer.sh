@@ -5,7 +5,6 @@
 
 function checkVirualKernel()
 {
-    yum install wget
     cd /tmp
     wget –N —no–check–certificate https://raw.githubusercontent.com/91yun/code/master/vm_check.sh && bash vm_check.sh
 }
@@ -13,7 +12,7 @@ function checkVirualKernel()
 function shadowsocksInstall()
 {
     yum update
-    yum install m2crypto vim gcc python-setuptools wget
+    yum install m2crypto gcc python-setuptools
     easy_install pip
     pip install shadowsocks
     cd /tmp
@@ -91,7 +90,6 @@ function tcpReset()
 
 function serverspeederInstall()
 {
-    yum install wget
     cd /tmp
     wget -N --no-check-certificate https://raw.githubusercontent.com/91yun/serverspeeder/master/serverspeeder-all.sh && bash serverspeeder-all.sh
 }
@@ -158,15 +156,16 @@ function mariadbInstall()
 function lnmpInstall()
 {
     nginxInstall
+    mariadbInstall
+    phpInstall
 }
 
 function sqlmapInstall()
 {
-    yum install git
     cd /opt
     git clone https://github.com/sqlmapproject/sqlmap
 
-    cd /usr/bin
+    cd /usr/local/bin
     echo '#!/bin/bash' > sqlmap
     echo 'cd /opt/sqlmap' >> sqlmap
     echo 'python sqlmap.py "$@"' >> sqlmap
@@ -184,7 +183,6 @@ function metasploitInstall()
     yum update
     yum upgrade
 
-
     yum groupinstall 'Development Tools'
     yum install sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
     nmapInstall
@@ -201,14 +199,39 @@ function metasploitInstall()
     # postgresql-setup initdb
     # systemctl start postgresql-9.4.service
     # systemctl enable postgresql-9.4.service
-    cd /tmp
-    wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-installer.run
-    chmod 777 metasploit-latest-linux-installer.run
-    ./metasploit-latest-linux-installer.run
+    # cd /tmp
+    # wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-installer.run
+    # chmod 777 metasploit-latest-linux-installer.run
+    # ./metasploit-latest-linux-installer.run
+    echo '''
+    --->do this:
+    su - postgres
+    createuser msf -P -S -R -D
+    createdb -O msf msf
+    exit
+    '''
+    echo "local msf msf md5" >> /var/lib/pgsql/data/pg_hba.conf
+    echo "hostmsf msf 127.0.0.1/8 md5" >> /var/lib/pgsql/data/pg_hba.conf
+    echo "hostmsf msf ::1/128 md5" >> /var/lib/pgsql/data/pg_hba.conf
+    systemctl restart postgresql
+    gem sources --remove https://rubygems.org/
+    gem sources -a https://ruby.taobao.org/
+    # gem sources -l
+    gem install wirble pg sqlite3 msgpack activerecord redcarpet rspec simplecov yard bundler
+    cd /opt
+    git clone https://github.com/rapid7/metasploit-framework.git
+    cd metasploit-framework
+    bash -c 'for MSF in $(ls msf*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
+    ln -s /opt/metasploit-framework/armitage /usr/local/bin/armitage
+
+
 }
 
 function main()
 {
+    yum install update
+    yum install upgrade
+    yum install tmux wget git vim
     userInput='NULL'
     while [ $userInput != 'exit' ] && [ $userInput != 'q' ]
         do
@@ -221,7 +244,10 @@ function main()
             echo "6. setSSHD"
             echo "7. setHostname"
             echo "8. lnmpInstall"
-            read -p "-->:" -n 5 userInput
+            echo "9. sqlmapInstall"
+            echo "10. nmapInstall"
+            echo "11. metasploitInstall"
+            read -p "-->:" userInput
 
             if [ $userInput ]
                 then
@@ -246,6 +272,18 @@ function main()
                                     ;;
                                 7)
                                     setHostname
+                                    ;;
+                                8)
+                                    lnmpInstall
+                                    ;;
+                                9)
+                                    sqlmapInstall
+                                    ;;
+                                10)
+                                    nmapInstall
+                                    ;;
+                                11)
+                                    metasploitInstall
                                     ;;
 
                                 'q')
