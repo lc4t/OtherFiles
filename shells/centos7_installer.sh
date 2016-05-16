@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 
 
@@ -15,51 +15,78 @@ function shadowsocksInstall()
     yum install m2crypto gcc python-setuptools
     easy_install pip
     pip install shadowsocks
-    cd /tmp
-    wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
-    tar zxf LATEST.tar.gz
-    cd libsodium*
-    ./configure
-    make && make install
-    echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
-    ldconfig
+    cat /etc/ld.so.conf.d/usr_local_lib.conf
+    if [ $? -ne 0 ]
+        then
+            cd /tmp
+            wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
+            tar zxf LATEST.tar.gz
+            cd libsodium*
+            ./configure
+            make && make install
+            echo /etc/ld.so.conf.d/usr_local_lib.conf
+            echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+            ldconfig
+    fi
 
     ### shadowsocks config file
-    port=25
-    read -p "Input ss port[25]:" port
-    password="123456"
-    read -p "Input ss password[123456]:" passwd
-    filename="shadowsocks.json"
+
+    read -p "Input ss port[8080]:" port
+    if [ "$port" = "" ]
+        then
+            port=8080
+    fi
+
+    read -p "Input ss password[lc4t]:" password
+    if [ "$password" = "" ]
+        then
+            password="lc4t"
+    fi
+
+
     read -p "Input ss filename[shadowsocks.json]:" filename
+    if [ "$filename" = "" ]
+        then
+            filename="shadowsocks.json"
+    fi
     mkdir /etc/shadowsocks
     cd /etc/shadowsocks
-    echo "{" > $filename
-    echo "\"server\":\"0.0.0.0\"," >> $filename
-    echo "\"server_port\":$port," >> $filename
-    echo "\"local_address\": \"127.0.0.1\"," >> $filename
-    echo "\"local_port\":1080," >> $filename
-    echo "\"password\":\"$passwd\"," >> $filename
-    echo "\"timeout\":300," >> $filename
-    echo "\"method\":\"chacha20\"," >> $filename
-    echo "\"fast_open\": true," >> $filename
-    echo "\"workers\": 1" >> $filename
-    echo "}" >> $filename
-
+    echo '{'                                   >  $filename
+    echo '"server":"0.0.0.0",'                  >> $filename
+    echo '"server_port":'$port','              >> $filename
+    echo '"local_address": "127.0.0.1",'       >> $filename
+    echo '"local_port":1080,'                  >> $filename
+    echo '"password":"'$password'",'           >> $filename
+    echo '"timeout":300,'                      >> $filename
+    echo '"method":"chacha20",'                >> $filename
+    echo '"fast_open": true,'                  >> $filename
+    echo '"workers": 1'                        >> $filename
+    echo '}'                                   >> $filename
+    ssserver -c /etc/shadowsocks/$filename -d start
 }
 
 function supervisorInstall()
 {
-    easy_install pip
-    pip install supervisor
+    cat /etc/supervisord.conf
+    if [ $? -ne 0 ]
+        then
+            easy_install pip
+            pip install supervisor
+    fi
     filename="shadowsocks.json"
     read -p "Input ss filename[shadowsocks.json]:" filename
-    echo "[program:shadowsocks]" >> /etc/supervisord.conf
+    if [ "$filename" = "" ]
+        then
+            filename="shadowsocks.json"
+    fi
+    echo_supervisord_conf >/etc/supervisord.conf
+    echo "[program:shadowsocks]"                            >> /etc/supervisord.conf
     echo "command = ssserver -c /etc/shadowsocks/$filename" >> /etc/supervisord.conf
-    echo "user = root" >> /etc/supervisord.conf
-    echo "autostart = true" >> /etc/supervisord.conf
-    echo "autoresart = true" >> /etc/supervisord.conf
-    echo "stderr_logfile = /root/ss.stderr.log" >> /etc/supervisord.conf
-    echo "stdout_logfile = /root/ss.stdout.log" >> /etc/supervisord.conf
+    echo "user = root"                                      >> /etc/supervisord.conf
+    echo "autostart = true"                                 >> /etc/supervisord.conf
+    echo "autoresart = true"                                >> /etc/supervisord.conf
+    echo "stderr_logfile = /root/ss.stderr.log"             >> /etc/supervisord.conf
+    echo "stdout_logfile = /root/ss.stdout.log"             >> /etc/supervisord.conf
     supervisord -c /etc/supervisord.conf
     echo "supervisord" >> /etc/rc.local
     chmod +x /etc/rc.local
@@ -96,10 +123,10 @@ function serverspeederInstall()
 
 function setSSHD()
 {
-    noPassword="y"
-    read -p "no password and use rsa? y or n[y]" noPassword
-    if [ noPassword = "y" ]
+    read -p "no password and use rsa?[y/n]" noPassword
+    if [ "$noPassword" = "" ] || [ "$noPassword" = "Y" ] || [ "$noPassword" = "y" ]
         then
+            echo "set..."
             sed -i 's/^[[:space:]]*PasswordAuthentication[[:space:]].*$//g' /etc/ssh/sshd_config
             sed -i 's/^[[:space:]]*PubkeyAuthentication[[:space:]].*$//g' /etc/ssh/sshd_config
             sed -i 's/^[[:space:]]*ChallengeResponseAuthentication[[:space:]].*$//g' /etc/ssh/sshd_config
@@ -107,10 +134,16 @@ function setSSHD()
             echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
             echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
             echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config
+    else
+        echo "NO"
     fi
 
-    port="22"
+
     read -p "set the ssh port:[22]" port
+    if [ "$port" = "" ]
+        then
+            port=22
+    fi
     sed -i 's/^[[:space:]]*Port[[:space:]][0-9]*$//g' /etc/ssh/sshd_config
     echo "Port $port" >> /etc/ssh/sshd_config
 }
@@ -118,8 +151,13 @@ function setSSHD()
 function setHostname()
 {
     oldHostname=`cat /etc/hostname`
-    newHostname="host"
+
     read -p "new hostname[host]" newHostname
+    if [ "$newHostname" = "" ]
+        then
+            newHostname = "host"
+    fi
+    echo $newHostname > /etc/hostname
     sed -i "s/$oldHostname/$newHostname/g" /etc/hosts
 }
 
@@ -166,10 +204,11 @@ function sqlmapInstall()
     git clone https://github.com/sqlmapproject/sqlmap
 
     cd /usr/local/bin
+    touch sqlmap
     echo '#!/bin/bash' > sqlmap
     echo 'cd /opt/sqlmap' >> sqlmap
     echo 'python sqlmap.py "$@"' >> sqlmap
-
+    chmod a+x sqlmap
 }
 
 function nmapInstall()
@@ -184,25 +223,17 @@ function metasploitInstall()
     yum upgrade
 
     yum groupinstall 'Development Tools'
-    yum install sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
+    yum install ruby sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
+    gem sources --remove https://rubygems.org/
+    gem sources -a https://ruby.taobao.org/
+    # gem sources -l
+    gem install wirble pg sqlite3 msgpack activerecord redcarpet rspec simplecov yard bundler
     nmapInstall
     yum install postgresql-server postgresql-contrib
     postgresql-setup initdb
     systemctl start postgresql
     systemctl enable postgresql
-    # exclude=postgresql*
-    # cd /tmp
-    # wget http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-centos94-9.4-1.noarch.rpm
-    # rpm -ivh pgdg-centos94-9.4-1.noarch.rpm
-    # # yum update
-    # yum install postgresql94-server postgresql94-devel postgresql94
-    # postgresql-setup initdb
-    # systemctl start postgresql-9.4.service
-    # systemctl enable postgresql-9.4.service
-    # cd /tmp
-    # wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-installer.run
-    # chmod 777 metasploit-latest-linux-installer.run
-    # ./metasploit-latest-linux-installer.run
+
     echo '''
     --->do this:
     su - postgres
@@ -214,10 +245,7 @@ function metasploitInstall()
     echo "hostmsf msf 127.0.0.1/8 md5" >> /var/lib/pgsql/data/pg_hba.conf
     echo "hostmsf msf ::1/128 md5" >> /var/lib/pgsql/data/pg_hba.conf
     systemctl restart postgresql
-    gem sources --remove https://rubygems.org/
-    gem sources -a https://ruby.taobao.org/
-    # gem sources -l
-    gem install wirble pg sqlite3 msgpack activerecord redcarpet rspec simplecov yard bundler
+
     cd /opt
     git clone https://github.com/rapid7/metasploit-framework.git
     cd metasploit-framework
@@ -225,6 +253,11 @@ function metasploitInstall()
     ln -s /opt/metasploit-framework/armitage /usr/local/bin/armitage
 
 
+}
+
+function crontabInstall()
+{
+    yum install cronie
 }
 
 function main()
@@ -247,6 +280,7 @@ function main()
             echo "9. sqlmapInstall"
             echo "10. nmapInstall"
             echo "11. metasploitInstall"
+            echo "12. crontabInstall"
             read -p "-->:" userInput
 
             if [ $userInput ]
@@ -285,7 +319,9 @@ function main()
                                 11)
                                     metasploitInstall
                                     ;;
-
+                                12)
+                                    crontabInstall
+                                    ;;
                                 'q')
                                     exit
                                     ;;
