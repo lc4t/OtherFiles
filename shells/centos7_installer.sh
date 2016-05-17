@@ -222,35 +222,38 @@ function metasploitInstall()
     yum update
     yum upgrade
 
-    yum groupinstall 'Development Tools'
-    yum install ruby sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
-    gem sources --remove https://rubygems.org/
-    gem sources -a https://ruby.taobao.org/
-    # gem sources -l
-    gem install wirble pg sqlite3 msgpack activerecord redcarpet rspec simplecov yard bundler
-    nmapInstall
-    yum install postgresql-server postgresql-contrib
-    postgresql-setup initdb
-    systemctl start postgresql
-    systemctl enable postgresql
 
-    echo '''
-    --->do this:
-    su - postgres
-    createuser msf -P -S -R -D
-    createdb -O msf msf
-    exit
-    '''
-    echo "local msf msf md5" >> /var/lib/pgsql/data/pg_hba.conf
-    echo "hostmsf msf 127.0.0.1/8 md5" >> /var/lib/pgsql/data/pg_hba.conf
-    echo "hostmsf msf ::1/128 md5" >> /var/lib/pgsql/data/pg_hba.conf
+    curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall &&   chmod 755 msfinstall &&   ./msfinstall
+    yum install postgresql
+    yum install postgresql-server
+    postgresql-setup initdb
+
+    echo 'please set this>>>
+            host    "msf_database"	"msf_user"      127.0.0.1/32          md5
+            host     all             all            127.0.0.1/32          ident
+        @/var/lib/pgsql/data/pg_hba.conf'
+    read
+    systemctl start postgresql.service
+    echo 'DO THIS-->(password should \d\w, not !@#$%^&*())
+            su postgres
+            createuser msf_user -P
+            createdb --owner=msf_user msf_database
+        '
+    read
+
+    systemctl enable postgresql
     systemctl restart postgresql
 
     cd /opt
-    git clone https://github.com/rapid7/metasploit-framework.git
     cd metasploit-framework
-    bash -c 'for MSF in $(ls msf*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
+    bash -c 'for MSF in $(ls meta*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
     ln -s /opt/metasploit-framework/armitage /usr/local/bin/armitage
+
+    echo 'DO THIS on msf-->
+            db_status
+            db_connect msf_user:yourmsfpassword@127.0.0.1:5432/msf_database
+            db_status
+        '
 
 
 }
