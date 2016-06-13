@@ -282,12 +282,12 @@ class Login:
         # print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
         # print (stdCountJson)
 
-    def uestcCatchCourse(self, courseCode = 0, value = 0, thread = 20, action = True):
+    def uestcCatchCourse(self, courseCode = 0, value = 0, thread = 20, action = '0'):
         # operator0:258929:false
 
         # virtualCashCost258929:12
         # operator0:258929:true:0
-        # 258929 252344 252382
+        # 258929 252382
         i = 0
         needLogin = True
         while(True):
@@ -298,8 +298,12 @@ class Login:
             if (courseCode == 0 or courseCode == None):
                 courseCode = input('coursecode:')
                 courseCode = courseCode.split(' ')
+            if (len(courseCode) == 0):
+                print ('all success')
+                exit()
+
             for code in courseCode:
-                if (action):
+                if (action != None and action != '0'):
                     # print ('try catch' + str(code))
                     postData = urlencode(
                         {
@@ -318,23 +322,24 @@ class Login:
                 soup = BeautifulSoup(ans.text, 'lxml')
                 message = soup.div.get_text().replace('\n','').replace('\t','')
                 # print (str(i) + ':' + str(date) + ':' + str(message))
-                if (i % 50 == 1):
+                if (i % 50 == 49):
                     print ()
                     print (i, end = ' ')
                     print (date)
                     print (message)
                 i += 1
+                # print (message)
                 if (re.findall(r'This session has been expired', message)):
                     needLogin = True
                     print (message)
                     break
                 elif(re.findall(r'失败', message)):
-                    print ('0', end = '')
+                    print ('-', end = '')
                 elif(re.findall(r'成功', message)):
                     print (message)
                     courseCode.remove(code)
                 else:
-                    print ('0', end = '')
+                    print ('-', end = '')
                 needLogin = False
 
 
