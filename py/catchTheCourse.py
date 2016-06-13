@@ -9,6 +9,9 @@ import time
 from optparse import OptionParser
 
 from urllib.parse import urlencode
+
+__TYPE__ = 'B'
+
 class Login:
     def __init__(self):
         self.request = requests.Session()
@@ -86,9 +89,9 @@ class Login:
         if (loginer.url == loginURL):
             print ('username/password/captcha may wrong, please input again')
             exit(0)
-        self.uestcVisitExam()
 
-    def uestcVisitExam(self):   # set upselect
+
+    def uestcVisitExam(self, NEXT = True):   # set upselect
         self.examManagerBaseURL = 'http://eams.uestc.edu.cn'
         self.examTypes = {}
         loginer = self.request.get(url = self.examManagerBaseURL + '/eams/home!submenus.action', headers = self.uestcHeader)
@@ -97,10 +100,12 @@ class Login:
         for i, types in enumerate(soup.select('a[mytitle]')):
             print (i, types['mytitle'])
             self.examTypes[i] = types['href']
-        select = int((input('select one, input number:')))
-        self.uestcGetSelectType(select)
 
-    def uestcGetSelectType(self, upselect = -1):    # set select
+        if (NEXT):
+            select = int((input('select one, input number:')))
+            self.uestcGetSelectType(select)
+
+    def uestcGetSelectType(self, upselect = -1, NEXT = True):    # set select
         print ('uestcGetSelectType ==>')
         if (upselect < 0 or upselect >= len(self.examTypes)):
             print ('error input, back')
@@ -109,16 +114,18 @@ class Login:
 
 
         self.tablerTypes = {}
-        tabler = self.request.get(url = self.examManagerBaseURL + self.examTypes[select])
+        tabler = self.request.get(url = self.examManagerBaseURL + self.examTypes[upselect], headers = self.uestcHeader)
         soup = BeautifulSoup(tabler.text, 'lxml')
         for i, types in enumerate(soup.select('a[mytitle]')):
             print (i, types['mytitle'])
             self.tablerTypes[i] = types['href']
-        select = int((input('select one, input number:')))
-        self.uestcTablerSelectType(select, upselect)
+
+        if (NEXT):
+            select = int((input('select one, input number:')))
+            self.uestcTablerSelectType(select, upselect)
 
 
-    def uestcTablerSelectType(self, select, upselect):    # handle point here
+    def uestcTablerSelectType(self, select, upselect, NEXT = True):    # handle point here
         print ('uestcTablerSelectType ==>')
         '''
             upselect
@@ -152,13 +159,185 @@ class Login:
             self.uestcVisitExam()
             return
 
-        html = self.request.get(url = self.examManagerBaseURL + self.tablerTypes[select])
-        if (upselect == 0):
-            if (select == 9):
-                self.uestcChooseCourse(html)
+        html = self.request.get(url = self.examManagerBaseURL + self.tablerTypes[select], headers = self.uestcHeader)
+        if (NEXT):
+            if (upselect == 0):
+                if (select == 9):
+                    self.uestcChooseCourseType(html.text)
+                else:
+                    print ('select error')
+                    self.uestcVisitExam()
+                    return
+            else:
+                print ('upselect error')
+                self.uestcVisitExam()
+                return
+        else:
+            return html.text
+        return
 
-    def uestcChooseCourse(self, html):
+    def uestcChooseCourseType(self, html, NEXT = True):
+        # baseURL is http://eams.uestc.edu.cn/eams/, add /eams/ to choosecourseTypes
+        self.choosecourseTypes = {}
         print ('uestcChooseCourse ==>')
+        soup = BeautifulSoup(html,'lxml')
+        if(re.findall(r'第 1 轮', soup.get_text())):
+            for i, types in enumerate(soup.select('a[target=stdElectDiv]')):
+                cType = re.findall(r'(\w)平台',types.parent.h2.get_text())[0]
+                print (cType + ' 平台')
+                print (types.parent.select('div')[0].div.get_text().strip('\n').replace('\t',''))
+
+                self.choosecourseTypes[cType] = '/eams/' + types['href']
+
+            if (NEXT):
+                select = input('select one, input A or B:').upper()
+                html = self.request.get(url = self.examManagerBaseURL + self.choosecourseTypes[select], headers = self.uestcHeader)
+                self.uestcChooseCourse1(select, html.text)
+            else:
+                select = __TYPE__
+                html = self.request.get(url = self.examManagerBaseURL + self.choosecourseTypes[select], headers = self.uestcHeader)
+                self.uestcChooseCourse1(select, html.text)
+                return html.text
+            return
+        elif(re.findall(r'第 2 轮', soup.get_text())): # not test
+            for i, types in enumerate(soup.select('a[target=stdElectDiv]')):
+                cType = re.findall(r'(\w)平台',types.parent.h2.get_text())[0]
+                print (cType + ' 平台')
+                print (types.parent.select('div')[0].div.get_text().strip('\n').replace('\t',''))
+
+                self.choosecourseTypes[cType] = '/eams/' + types['href']
+
+
+            if (NEXT):
+                select = input('select one, input A or B:').upper()
+                html = self.request.get(url = self.examManagerBaseURL + self.choosecourseTypes[select], headers = self.uestcHeader)
+                self.uestcChooseCourse2(select, html.text)
+            else:
+                select = __TYPE__
+                html = self.request.get(url = self.examManagerBaseURL + self.choosecourseTypes[select], headers = self.uestcHeader)
+                return html.text
+            return
+
+        elif(re.findall(r'第 3 轮', soup.get_text())): # not test
+            for i, types in enumerate(soup.select('a[target=stdElectDiv]')):
+                cType = re.findall(r'(\w)平台',types.parent.h2.get_text())[0]
+                print (cType + ' 平台')
+                print (types.parent.select('div')[0].div.get_text().strip('\n').replace('\t',''))
+                self.choosecourseTypes[cType] = '/eams/' + types['href']
+
+            if (NEXT):
+                select = input('select one, input A or B:').upper()
+                html = self.request.get(url = self.examManagerBaseURL + self.choosecourseTypes[select], headers = self.uestcHeader)
+                self.uestcChooseCourse3(select, html.text)
+            else:
+                select = __TYPE__
+                html = self.request.get(url = self.examManagerBaseURL + self.choosecourseTypes[select], headers = self.uestcHeader)
+                return html.text
+            return
+        else:
+            print (soup)
+            print ('not support')
+
+    def uestcChooseCourse1(self, select, html, NEXT = True):
+        soup = BeautifulSoup(html, 'lxml')
+        for links in soup.select('script[src^=/eams/stdElectCourse!]'):
+            if (re.findall(r'data\.action', links['src'])):  # data
+                self.dataURL = links['src']
+            elif (re.findall(r'queryStdCount\.action', links['src'])):
+                self.queryStdCountURL = links['src']
+        self.catchCourseURL = self.queryStdCountURL.replace('queryStdCount.action', 'batchOperator.action')
+        # dataJson = self.request.get(self.examManagerBaseURL + dataURL).text
+        # stdCountJson = self.request.get(self.examManagerBaseURL + queryStdCountURL).text
+        # print (dataJson)
+        # print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+        # print (stdCountJson)
+
+    def uestcChooseCourse2(self, select, html, NEXT = True):
+        soup = BeautifulSoup(html, 'lxml')
+        for links in soup.select('script[src^=/eams/stdElectCourse!]'):
+            if (re.findall(r'data\.action', links['src'])):  # data
+                self.dataURL = links['src']
+            elif (re.findall(r'queryStdCount\.action', links['src'])):
+                self.queryStdCountURL = links['src']
+        self.catchCourseURL = self.queryStdCountURL.replace('queryStdCount.action', 'batchOperator.action')
+        # dataJson = self.request.get(self.examManagerBaseURL + dataURL).text
+        # stdCountJson = self.request.get(self.examManagerBaseURL + queryStdCountURL).text
+        # print (dataJson)
+        # print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+        # print (stdCountJson)
+
+    def uestcChooseCourse3(self, select, html, NEXT = True):
+        soup = BeautifulSoup(html, 'lxml')
+        for links in soup.select('script[src^=/eams/stdElectCourse!]'):
+            if (re.findall(r'data\.action', links['src'])):  # data
+                self.dataURL = links['src']
+            elif (re.findall(r'queryStdCount\.action', links['src'])):
+                self.queryStdCountURL = links['src']
+
+        # /eams/stdElectCourse!data.action?profileId=654
+        self.catchCourseURL = self.queryStdCountURL.replace('queryStdCount.action', 'batchOperator.action')
+        # dataJson = self.request.get(self.examManagerBaseURL + dataURL).text
+        # stdCountJson = self.request.get(self.examManagerBaseURL + queryStdCountURL).text
+        # print (dataJson)
+        # print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+        # print (stdCountJson)
+
+    def uestcCatchCourse(self, courseCode = 0, value = 0, thread = 20, action = True):
+        # operator0:258929:false
+
+        # virtualCashCost258929:12
+        # operator0:258929:true:0
+        # 258929 252344 252382
+        i = 0
+        needLogin = True
+        while(True):
+            if (needLogin):
+                self.uestcVisitExam(NEXT = False)
+                self.uestcGetSelectType(upselect = 0, NEXT = False)
+                self.uestcChooseCourseType(self.uestcTablerSelectType(select = 9, upselect = 0, NEXT = False), NEXT = False)
+            if (courseCode == 0 or courseCode == None):
+                courseCode = input('coursecode:')
+                courseCode = courseCode.split(' ')
+            for code in courseCode:
+                if (action):
+                    # print ('try catch' + str(code))
+                    postData = urlencode(
+                        {
+                            'virtualCashCost'+str(code): value,
+                            'operator0':str(code) + ':true:0'
+                        }).encode(encoding='UTF8')
+                else:
+                    # print ('un catch' + str(code))
+                    postData = urlencode(
+                        {
+                            'operator0':str(code) + ':false'
+                        }).encode(encoding='UTF8')
+                # print (postData)
+                ans = self.request.post(url = self.examManagerBaseURL + self.catchCourseURL, data = postData, headers = self.uestcHeader)
+                date = ans.headers['Date']
+                soup = BeautifulSoup(ans.text, 'lxml')
+                message = soup.div.get_text().replace('\n','').replace('\t','')
+                # print (str(i) + ':' + str(date) + ':' + str(message))
+                if (i % 50 == 1):
+                    print ()
+                    print (i, end = ' ')
+                    print (date)
+                    print (message)
+                i += 1
+                if (re.findall(r'This session has been expired', message)):
+                    needLogin = True
+                    print (message)
+                    break
+                elif(re.findall(r'失败', message)):
+                    print ('0', end = '')
+                elif(re.findall(r'成功', message)):
+                    print (message)
+                    courseCode.remove(code)
+                else:
+                    print ('0', end = '')
+                needLogin = False
+
+
 
 
 def main():
@@ -167,6 +346,8 @@ def main():
     parser.add_option('-u', '--username', help = 'Your username')
     parser.add_option('-p', '--password', help = 'Your password')
     parser.add_option('-s', '--school', help = 'uestc..')
+    parser.add_option('-f', '--function', help = '[1]: catch course [2] normal..')
+    parser.add_option('-o', '--others', help = 'give functions params,[1] is ok')
     (options, args) = parser.parse_args()
     if (options.school == None):
         options.school = 'uestc'
@@ -174,10 +355,16 @@ def main():
         parser.print_help()
         exit(0)
     if (options.school == 'uestc'):
-        crawler = Login()
-        crawler.uestc('http://idas.uestc.edu.cn/authserver/login?service=http://portal.uestc.edu.cn/index.portal', options.username, options.password)
+        if (options.function == None or options.function == '2'):
+            crawler = Login()
+            crawler.uestc('http://idas.uestc.edu.cn/authserver/login?service=http://portal.uestc.edu.cn/index.portal', options.username, options.password)
+            crawler.uestcVisitExam()
+        elif (options.function == '1'):
+            crawler = Login()
+            crawler.uestc('http://idas.uestc.edu.cn/authserver/login?service=http://portal.uestc.edu.cn/index.portal', options.username, options.password)
+            crawler.uestcCatchCourse(action = options.others)
     else:
-        print ('Not support, you can pull request to https://github.com/lc4t/Otherfile/py/catchTheCourse.py')
+        print ('Not support school, you can pull request to https://github.com/lc4t/Otherfile/py/catchTheCourse.py')
         exit(0)
 
 
