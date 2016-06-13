@@ -10,7 +10,7 @@ from optparse import OptionParser
 
 from urllib.parse import urlencode
 
-__TYPE__ = 'B'
+__TYPE__ = 'A'
 
 class Login:
     def __init__(self):
