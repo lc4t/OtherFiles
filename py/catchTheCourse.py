@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import lxml
 import re
 import time
+import demjson
 from optparse import OptionParser
 
 from urllib.parse import urlencode
@@ -239,18 +240,27 @@ class Login:
             print ('not support')
 
     def uestcChooseCourse1(self, select, html, NEXT = True):
+        print ('uestcChooseCourse1')
         soup = BeautifulSoup(html, 'lxml')
         for links in soup.select('script[src^=/eams/stdElectCourse!]'):
             if (re.findall(r'data\.action', links['src'])):  # data
                 self.dataURL = links['src']
             elif (re.findall(r'queryStdCount\.action', links['src'])):
                 self.queryStdCountURL = links['src']
+
         self.catchCourseURL = self.queryStdCountURL.replace('queryStdCount.action', 'batchOperator.action')
-        # dataJson = self.request.get(self.examManagerBaseURL + dataURL).text
-        # stdCountJson = self.request.get(self.examManagerBaseURL + queryStdCountURL).text
-        # print (dataJson)
-        # print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-        # print (stdCountJson)
+        dataJson = self.request.get(url = self.examManagerBaseURL + self.dataURL, headers = self.uestcHeader).text
+        stdCountJson = self.request.get(url = self.examManagerBaseURL + self.queryStdCountURL, headers = self.uestcHeader).text
+
+        dataJson = demjson.decode(dataJson[dataJson.find('=') + 1:].strip(';')) # data
+        stdCountJson = demjson.decode(stdCountJson[stdCountJson.find('=') + 1:].strip(';')) #now count
+        print (dataJson)
+        print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+        print (stdCountJson)
+
+        print (self.examManagerBaseURL + self.dataURL)
+        print (self.examManagerBaseURL + self.queryStdCountURL)
+
 
     def uestcChooseCourse2(self, select, html, NEXT = True):
         soup = BeautifulSoup(html, 'lxml')
@@ -307,7 +317,7 @@ class Login:
                     # print ('try catch' + str(code))
                     postData = urlencode(
                         {
-                            'virtualCashCost'+str(code): value,
+                            # 'virtualCashCost'+str(code): value,
                             'operator0':str(code) + ':true:0'
                         }).encode(encoding='UTF8')
                 else:
