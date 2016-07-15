@@ -249,17 +249,17 @@ class Login:
                 self.queryStdCountURL = links['src']
 
         self.catchCourseURL = self.queryStdCountURL.replace('queryStdCount.action', 'batchOperator.action')
-        dataJson = self.request.get(url = self.examManagerBaseURL + self.dataURL, headers = self.uestcHeader).text
-        stdCountJson = self.request.get(url = self.examManagerBaseURL + self.queryStdCountURL, headers = self.uestcHeader).text
-
-        dataJson = demjson.decode(dataJson[dataJson.find('=') + 1:].strip(';')) # data
-        stdCountJson = demjson.decode(stdCountJson[stdCountJson.find('=') + 1:].strip(';')) #now count
-        print (dataJson)
-        print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
-        print (stdCountJson)
-
-        print (self.examManagerBaseURL + self.dataURL)
-        print (self.examManagerBaseURL + self.queryStdCountURL)
+        # dataJson = self.request.get(url = self.examManagerBaseURL + self.dataURL, headers = self.uestcHeader).text
+        # stdCountJson = self.request.get(url = self.examManagerBaseURL + self.queryStdCountURL, headers = self.uestcHeader).text
+        #
+        # dataJson = demjson.decode(dataJson[dataJson.find('=') + 1:].strip(';')) # data
+        # stdCountJson = demjson.decode(stdCountJson[stdCountJson.find('=') + 1:].strip(';')) #now count
+        # print (dataJson)
+        # print ('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+        # print (stdCountJson)
+        #
+        # print (self.examManagerBaseURL + self.dataURL)
+        # print (self.examManagerBaseURL + self.queryStdCountURL)
 
 
     def uestcChooseCourse2(self, select, html, NEXT = True):
