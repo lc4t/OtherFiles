@@ -1,4 +1,8 @@
+**updata 2015.9.1**
+**author lc4t***
+
 ---
+
 
 #Training
 
@@ -218,8 +222,94 @@ if (isset($login))
 ```
 
 
+####Training: Programming 1
+	写个程序
+```python
+import urllib2
+import cookielib
+
+def make_cookie(name, value):
+    return cookielib.Cookie(
+        version=0,
+        name=name,
+        value=value,
+        port=None,
+        port_specified=False,
+        domain=".wechall.net",
+        domain_specified=True,
+        domain_initial_dot=False,
+        path="/",
+        path_specified=True,
+        secure=False,
+        expires=None,
+        discard=True,
+        comment=None,
+        comment_url=None,
+        rest=None
+    )
+
+YOUR_COOKIES_VALUE = '' # cookies value for WC
+URL = 'http://www.wechall.net/challenge/training/programming1/index.php?action=request'
+cookies = cookielib.CookieJar()
+cookies.set_cookie(make_cookie('WC',YOUR_COOKIES_VALUE))
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
+
+request = urllib2.Request(URL)
+result = opener.open(request)
+
+rtn = result.read()
+
+# return key to wechall
+URLRe = 'http://www.wechall.net/challenge/training/programming1/index.php?answer=' + rtn
+request = urllib2.Request(URLRe)
+result = opener.open(request)
+print (result.read())
+```
+
+####Training: Crypto - Substitution
+	因为密钥种类很多，枚举复杂度太高，用概率求解
+[概率求解字符串](http://www.quipqiup.com/index.php)
 
 
+
+####Training: Net Ports
+
+	curl使用 --local-port 参数,带上自己的cookies
+
+```bash
+sudo curl --local-port 42 -c 'WC=YOUR_COOKIES' http://www.wechall.net/challenge/training/net/ports/index.php
+```
+
+
+####Training: Crypto - Caesar II
+
+仍然是移位不过成了16进制表示
+```python
+s = '77 1F 1F 14 20 1A 1F 12 5C 20 29 1F 25 20 23 1F 1C 26 15 14 20 1F 1E 15 20 1D 1F 22 15 20 13 18 11 1C 1C 15 1E 17 15 20 19 1E 20 29 1F 25 22 20 1A 1F 25 22 1E 15 29 5E 20 04 18 19 23 20 1F 1E 15 20 27 11 23 20 16 11 19 22 1C 29 20 15 11 23 29 20 24 1F 20 13 22 11 13 1B 5E 20 07 11 23 1E 57 24 20 19 24 6F 20 61 62 68 20 1B 15 29 23 20 19 23 20 11 20 21 25 19 24 15 20 23 1D 11 1C 1C 20 1B 15 29 23 20 11 13 15 5C 20 23 1F 20 19 24 20 23 18 1F 25 1C 14 1E 57 24 20 18 11 26 15 20 24 11 1B 15 1E 20 29 1F 25 20 24 1F 1F 20 1C 1F 1E 17 20 24 1F 20 14 15 13 22 29 20 24 20 24 18 19 23 20 1D 15 23 23 11 17 15 5E 20 07 15 1C 1C 20 14 1F 1E 15 5C 20 29 1F 25 22 20 23 1F 1C 25 24 19 1F 1E 20 19 23 20 1D 20 23 11 22 22 15 23 20 1D 1E 17 5E'
+s = s.split()
+for key in range(0,128+1,1):
+    for i in s:
+        i = int(i,16)
+        print (chr((i + key + 256) % 256 ), end = '')
+    print (key)
+```
+找到key=80时很像一句话
+
+Çoodpjob¬pyoupsolvedponepmorepchallengepinpyourpjourney®pThisponepwaspfairlypeasyptopcrack®pWasn§tpit¿p±²¸pkeyspispapquitepsmallpkeyspace¬psopitpshouldn§tphaveptakenpyouptooplongptopdecryptpthispmessage®pWellpdone¬pyourpsolutionpispmpsarrespmng®
+
+估计是有的key是负的，猜到第一个单词应该是Good，直接看一下和0x77差-48，直接输出这个-48的情况
+Gïïäðêïâ,ðùïõðóïìöåäðïîåðíïòåðãèáììåîçåðéîðùïõòðêïõòîåù.ðÔèéóðïîåð÷áóðæáéòìùðåáóùðôïðãòáãë.ð×áóî'ôðéô?ð128ðëåùóðéóðáðñõéôåðóíáììðëåùóðáãå,ðóïðéôðóèïõìäî'ôðèáöåðôáëåîðùïõðôïïðìïîçðôïðäåãòùðôðôèéóðíåóóáçå.ð×åììðäïîå,ðùïõòðóïìõôéïîðéóðíðóáòòåóðíîç.
+
+比对一下，即可flag
+
+	Good job, you solved one more challenge in your journey. This one was fairly easy topcrack. Wasn't it? 128 keys is a quite small keyspace, so it shouldn't have taken you too long to decrypt this message. Well done, your solution is mpsarrespmng.
+
+
+
+####Training: Encodings I
+
+	JPK直接解码to ascii发现是乱码，google后发现应该是7 bit一个字母，BitsPerBlock改为7，再to ascii
+	This text is 7-bit encoded ascii. Your password is easystarter.
 - - -
 
 
@@ -416,6 +506,50 @@ for num in range(1000001,9999999,2):
 ####hi (Math)
  	等差数列求和(17591026060782+2)*17591026060781/2，answer:154722098935564539692256152
 
+
+####Impossible n'est pas français (Exploit)
+
+题目说明的情况显然以我电脑的性能不可能解出来，提交post之后发现正确答案是返回来的，尝试发包解决
+```python
+import re
+import requests
+from bs4 import BeautifulSoup
+cookie = {
+    'WC': '8651680-13787-fOQ5h3LOfABt2C5o'
+}
+
+
+def getNumber():
+    url = 'http://www.wechall.net/challenge/impossible/index.php?request=new_number'
+    result = requests.get(url, cookies = cookie)
+
+def getAnswer():
+    getNumber()
+    url = 'http://www.wechall.net/challenge/impossible/index.php'
+    data = {
+        'solution': '123',
+        'cmd': 'Send',
+        'gwf3_csrf': 'HvA8YsU3'
+    }
+    result = requests.post(url, cookies = cookie, data = data)
+    text = BeautifulSoup(result.text).get_text()
+    answer = re.compile(r'"(\d+)"').findall(text)[0]
+    return answer
+
+def send():
+    url = 'http://www.wechall.net/challenge/impossible/index.php'
+    data = {
+        'solution':getAnswer(),
+        'cmd':'Send',
+        'gwf3_csrf':'HvA8YsU3'
+    }
+    result = requests.post(url, cookies = cookie, data = data)
+    print 'Ok'
+
+send()
+```
+
+OK
 - - -
 
 
