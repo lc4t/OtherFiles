@@ -1,0 +1,5 @@
+**/data/
+*.py[co]
+*.db
+db
+*.tmp
