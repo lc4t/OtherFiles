@@ -47,16 +47,18 @@ class QueryChsi(QuerySuper):
 class QuerySushe(QuerySuper):
     def getResult(self):
         try:
-            url = 'http://cet.99sushe.com/findscore'
+            url = 'https://cet.99sushe.com/getscore'
             headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
-            'Referer': 'http://cet.99sushe.com/',
-            'Origin': 'http://cet.99sushe.com',
+            'Referer': 'https://cet.99sushe.com/',
+            'Origin': 'https://cet.99sushe.com',
             }
             data = { 'id':self.ticket,'name':self.name.encode('GBK') }
-            request = requests.post(url, data = data, headers = headers, cookies = {'score':''}, )#proxies = proxies)
+            # print (data)
+            request = requests.post(url + str(self.ticket), data = data, headers = headers, cookies = {'score':'','id':str(self.ticket)}, )#proxies = proxies)
+            # print (request.text)
             result = str(request.text).split(',')
             if (result[0] == '4'):
                 result[0] = '四'
@@ -64,9 +66,9 @@ class QuerySushe(QuerySuper):
                 result[0] = '六'
             else:
                 pass
-
             result = [self.name, '英语'+ result[0] + '级', self.ticket, result[4], result[1], result[2], result[3]]
             assert len(result) == 7
+
             return result
         except Exception as err:
             print ('error:', err, self.name, self.ticket, 'sushe')
