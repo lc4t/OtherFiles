@@ -54,8 +54,11 @@ class get_google_group_posts:
 
     def output(self, jsons, filename = None):
         try:
-            open(filename, 'w+').write(json.dumps({'get':jsons}, ensure_ascii=False))
-            log('write file success, done')
+            open(filename, 'w+').write(json.dumps({'get':jsons}, ensure_ascii=False, indent=1))
+            log('write file success')
+            txt = str(json.load(open(filename, 'r'))).replace('\\n','\n')
+            open(filename + '.txt', 'w+').write(txt)
+            log('write txt success, done')
         except Exception as e:
             print (jsons)
             log('cannot write to file because %s, print it done' % (str(e)))
