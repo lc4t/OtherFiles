@@ -54,7 +54,7 @@ class get_google_group_posts:
 
     def output(self, jsons, filename = None):
         try:
-            open(filename, 'w+').write(json.dumps({'get':jsons}))
+            open(filename, 'w+').write(json.dumps({'get':jsons}, ensure_ascii=False))
             log('write file success, done')
         except Exception as e:
             print (jsons)
