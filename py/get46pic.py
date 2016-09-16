@@ -146,7 +146,6 @@ def main():
         else:
             xlsx_handler(options.input, options.output, options.filename, options.url, options.prefix, options.postfix)
     elif options.method == 'info':
-        start, output_file, prefix
         if options.output == None:
             parser.print_help()
             log('No output path')
@@ -160,7 +159,7 @@ def main():
             log('No prefix')
             exit()
         else:
-            info_handle(int(options.start), options.output, prefix)
+            info_handle(int(options.start), options.output, options.prefix)
     else:
         parser.print_help()
         exit()
