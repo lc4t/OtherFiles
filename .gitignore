@@ -1,4 +1,6 @@
 **/data/
+**/pic/
+*.csv
 *.py[co]
 *.db
 db
