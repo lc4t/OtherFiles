@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>JS使用指南</title>
+  </head>
+<body>
+
+
+    <pre>
+        1. script content or link at &lt;head&gt;:
+            ->intuitive; easy to modify; loaded first
+            ->synchronous load &lt;head&gt; and &lt;bod&ygt;, the script error result the body blank
+        2. script content or link at &lt;body&gt;:
+            ->load when &lt;body&gt; loaded, like DOM actions play here
+            ->..
+
+        1. &lt;body onload="xxx"&gt;:
+            ->load with body code, less chars used
+            ->not beauty code
+        2. &lt;script&gt;xxx&lt;script&gt;:
+            ->place this tag anywhere is ok, vars is global
+            ->dispersed, js interpreter will load many block
+        3. &lt;script src="xxx" &gt;:
+            ->separation is good
+            ->consider where to place(head, body, top, bottom...)
+    </pre>
+
+        <script>
+          alert("Hello World!");
+        </script>
+
+  </body>
+</html>

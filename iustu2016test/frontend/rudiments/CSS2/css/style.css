@@ -1,0 +1,33 @@
+body
+{
+    font-family:"tablet-gothic", verdana, arial, sans-serif;
+}
+
+h1
+{
+    font-size: 27px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 5px 10px;
+    color: #ffffff;
+    background-color: #ea2e49;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+h2
+{
+
+}
+
+
+.page-wrapper
+{
+    background-color: #daede2;
+}
+
+.intro
+{
+    padding: 5%;
+}
