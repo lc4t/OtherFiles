@@ -34,7 +34,7 @@ def xlsx_handler(input_file, output_file, filename, url, prefix, postfix):
             one_filename = ''.join([str(xlsx[cell].value) for cell in [i + str(row) for i in filename]]) + str(postfix)
         except TypeError as e:
             log('row:%d is None, exit' % (row))
-            exit(0)
+            # exit(0)
         one_url = prefix + '/' + xlsx[url+str(row)].value
         download(one_url, one_filename, output_file)
         row += 1

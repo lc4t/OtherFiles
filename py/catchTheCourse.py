@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 import lxml
 import re
 import time
-import demjson
 from optparse import OptionParser
 
 from urllib.parse import urlencode

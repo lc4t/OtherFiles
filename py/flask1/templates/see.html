@@ -1,0 +1,17 @@
+<!doctype html>
+
+<head>
+
+<title>{{title}}</title>
+</head>
+
+
+<body>
+{% for one in pages %}
+<a href="{{one.url}}">{{one.url}}</a>
+    {% for t in one.content%}
+        {{t}}
+    <br/>
+    {% endfor %}
+{% endfor %}
+</body>
