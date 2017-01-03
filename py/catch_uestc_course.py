@@ -37,7 +37,7 @@ class Catch:
             return True
         elif '未到选课时间' in test:
             log('未到选课时间')
-            # exit()
+            exit()
             return False
         else:
             log('Error login')
