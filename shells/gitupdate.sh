@@ -6,17 +6,20 @@ function scan_dir()
 	if [ -d "$1" ]
 	then
 		echo -e "\033[32m [+]cd $1 \033[0m"
-		`cd $1`
-		`git pull 2>>/dev/null`
-		for new_item in `ls $1`
-		do
-			if [ -d "$1/$new_item" ]
-			then
-				scan_dir "$1/$new_item"
-				echo -e "\033[33m [-]cd .. \033[0m"
-				`cd ..`
-			fi
-		done
+		cd $1
+		git pull 2>>/dev/null
+		if [ ! $? -eq 0 ]
+		then 
+			for new_item in `ls $1`
+			do
+				if [ -d "$1/$new_item" ]
+				then
+					scan_dir "$1/$new_item"
+					echo -e "\033[33m [-]cd .. \033[0m"
+					cd ..
+				fi
+			done
+		fi
 	else
 		echo -e "\033[31m $1 is not folder \033[0m"
 	fi
