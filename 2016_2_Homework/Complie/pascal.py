@@ -56,12 +56,18 @@ class LexicalAnalysis:
     def error(self, text):
         open(self.errorfile, 'a').write(text)
 
-    @classmethod
-    def is_identify(cls, symbol):
+    def is_identify(self, symbol, line=0):
         if symbol in symbol_to_sort_map:
             return False
-        elif re.match('^[a-zA-Z_]+[a-zA-Z0-9_]*$', symbol) and len(str(symbol)) <= 16:
-            return True
+        elif re.match('^[a-zA-Z_]+[a-zA-Z0-9_]*$', symbol):
+            if len(str(symbol)) <= 16:
+                return True
+            else:
+                e = '***LINE:%02d  overlength symbol "%s"' % (line, symbol)
+                errorMsg = 'LexicalAnalysis.is_identify(1): %s' % e
+                logger.error(errorMsg)
+                self.error(e)
+                return None
         else:
             return False
 
@@ -85,19 +91,19 @@ class LexicalAnalysis:
 
 
     def do(self, source_code, line=1):
-        _ = re.findall('<\s+=', source_code)
-        for i in _:
-            source_code = source_code.replace(i, '<=')
-        _ = re.findall('<\s+>', source_code)
-        for i in _:
-            source_code = source_code.replace(i, '<>')
-        _ = re.findall('>\s+=', source_code)
-        for i in _:
-            source_code = source_code.replace(i, '>=')
-        _ = re.findall(':\s+=', source_code)
-        for i in _:
-            source_code = source_code.replace(i, ':=')
-        source_code_split = source_code.replace('\n', ' \n ').replace(';', ' ; ').split(' ')
+        # _ = re.findall('<\s+=', source_code)
+        # for i in _:
+        #     source_code = source_code.replace(i, '<=')
+        # _ = re.findall('<\s+>', source_code)
+        # for i in _:
+        #     source_code = source_code.replace(i, '<>')
+        # _ = re.findall('>\s+=', source_code)
+        # for i in _:
+        #     source_code = source_code.replace(i, '>=')
+        # _ = re.findall(':\s+=', source_code)
+        # for i in _:
+        #     source_code = source_code.replace(i, ':=')
+        source_code_split = source_code.replace('\n', ' \n ').split(' ')
         for k in source_code_split:
             if k == '\n':
                 line += 1
@@ -105,7 +111,12 @@ class LexicalAnalysis:
                 continue
             if k == '':
                 continue
-            code, token = self.check_defines(k, line)
+            try:
+                code, token = self.check_defines(k, line)
+            except TypeError:
+                continue
+            # if code is None:
+                # continue
             self.write(code, token)
             if len(code) < len(k):
                 self.do(k[len(code):], line)
@@ -118,15 +129,19 @@ class LexicalAnalysis:
                 return (code[0:i], symbol_to_sort_map.get(code[0:i]))
         if self.is_const(code):
             return (code, 11)
-        if self.is_identify(code):
+        if self.is_identify(code, line=line) is None:
+            return None
+        elif self.is_identify(code, line=line):
             return (code, 10)
+        else:
+            pass
         if l > 1:
-            return self.check_defines(code[0:-1])
+            return self.check_defines(code[0:-1], line)
         else:
             criticalMsg = '***LINE:%02d  invalid symbol "%s"' % (line, code)
             logger.critical('LexicalAnalysis.do(1): %s' % criticalMsg)
             self.error(criticalMsg + '\n')
-            exit(0)
+            # exit(0)
             # return (-1, -1)
 
 class Var:
@@ -156,6 +171,7 @@ class GrammarAnalysis:
         '''
         '''
         self.filename = filename + '.dyd'
+        self.dysfilename = filename + '.dys'
         self.errorfile = filename + '.err'
         self.varfile = filename + '.var'
         self.profile = filename + '.pro'
@@ -166,14 +182,17 @@ class GrammarAnalysis:
         self.currentVar = Var()
         self.currentPro = Pro()
         self.char_index = 0
+        self.error_cnt = 0
         pass
 
     def init(self):
         logger.debug('GrammarAnalysis.init(1)')
         logger.info('GrammarAnalysis.init(2): read file %s' % self.filename)
+        os.system('cp %s %s' % (self.filename, self.dysfilename))
         self.tokens = open(self.filename, 'r').readlines()
 
     def check(self, currentVar=None):
+        print('total error: %d ' % self.error_cnt)
         print('----')
         # print('list is:')
         # for i in range(0, len(self.tokens), 1):
@@ -231,6 +250,7 @@ class GrammarAnalysis:
     def error(self, text):
         logger.error(text)
         open(self.errorfile, 'a').write(text + '\n')
+        self.error_cnt += 1
 
 
     def do(self):
@@ -363,7 +383,6 @@ class GrammarAnalysis:
 
         currentVar.vname = self.get_token()
         currentVar.vproc = self.currentPro.pname
-        self.check()
         # if self.token_index == self.currentPro.parameter:
         if currentVar.vproc != '':
             currentVar.vkind = 1
@@ -763,7 +782,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.clean:
         logger.info('main: delete files')
-        os.system('rm -f *.dyd *.err *.var *.pro')
+        os.system('rm -f *.dyd *.err *.var *.pro *.dys')
     elif args.file is None:
         parser.print_help()
     else:
