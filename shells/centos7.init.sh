@@ -1,5 +1,5 @@
 #! /bin/bash
-
+# curl -fsSL "https://raw.githubusercontent.com/lc4t/OtherFiles/master/shells/centos7.init.sh" | /bin/sh
 yum install -y tmux fish git epel-release net-tools vim openssl-devel
 yum groupinstall -y "Development tools"
 yum install -y python36-devel python36-pip
