@@ -8,3 +8,5 @@ yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce
 yum install docker-ce
 pip3 install docker-compose requests
 chsh -s /usr/bin/fish
+yum update -y
+yum upgrade -y
